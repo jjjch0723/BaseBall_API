@@ -1,20 +1,20 @@
-Games : 출장
-Plate Appernce : 타석
-Effective Plate Appernce : 유효 타석
-At Bat : 타수
-Runs : 득점
-Hits : 안타
+TeamCode : 팀코드
+Year : 년도
+Games : 경기수 : G
+Win : 승리 : W
+Lose : 패배 : L
+Effective Plate Appernce : 유효 타석 : ePA
+At Bat : 타수 : AB 
+Runs : 득점 : R
+Hits : 안타 : H
 2B : 2루타
 3B : 3루타
 HR : 홈런
-Total Bases : 루타
-Runs Batted In : 타점
-Stolen Base : 도루성공
-Caught Stealing : 도루실패
-Based on Balls : 4구
-Hit by Pitch : 사구
-Intentional Based on Ball : 고의 4구
-Strike Out : 삼진
-Grounded into Double Play : 병살타
-Sacrifice Hit : 희생번트
-Sacrifice Fly : 희생플라이
+Runs Batted In : 타점 : RBI
+Stolen Base : 도루성공 : SB
+Caught Stealing : 도루실패 : CS
+Based on Balls : 4구 : BB
+Strike Out : 삼진 : SO
+Average : 타율 : AVG
+On Base Percentage : 출루율 : OBP
+Slugging Average : 장타율 : SLG
