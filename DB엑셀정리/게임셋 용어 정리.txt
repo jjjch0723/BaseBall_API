@@ -1,0 +1,20 @@
+Games : 출장
+Plate Appernce : 타석
+Effective Plate Appernce : 유효 타석
+At Bat : 타수
+Runs : 득점
+Hits : 안타
+2B : 2루타
+3B : 3루타
+HR : 홈런
+Total Bases : 루타
+Runs Batted In : 타점
+Stolen Base : 도루성공
+Caught Stealing : 도루실패
+Based on Balls : 4구
+Hit by Pitch : 사구
+Intentional Based on Ball : 고의 4구
+Strike Out : 삼진
+Grounded into Double Play : 병살타
+Sacrifice Hit : 희생번트
+Sacrifice Fly : 희생플라이
