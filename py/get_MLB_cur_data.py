@@ -28,26 +28,22 @@ def get_schedule(start_date, end_date):
 
     return schedule
 
-# Function to process data for a given year range
-def process_data(start_year, end_year):
-    all_data = []
+# Function to process data for a given year
+def process_data(year):
+    start_date = datetime(year, 3, 1)
+    end_date = datetime(year, 11, 30)
+    year_schedule = get_schedule(start_date, end_date)
 
-    for year in range(start_year, end_year + 1):
-        start_date = datetime(year, 3, 1)
-        end_date = datetime(year, 11, 30)
-        year_schedule = get_schedule(start_date, end_date)
-        all_data.extend(year_schedule)
+    # Save the data to a JSON file
+    file_path = os.path.join(save_dir, f"game_result_MLB_{year}.json")
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(year_schedule, f, ensure_ascii=False, indent=4)
 
-    return all_data
+    print(f"{year}년의 경기 결과가 {file_path} 파일에 성공적으로 저장되었습니다.")
 
-# Get the data for 2000-2023
+# Get the data for each year from 2000 to 2023
 start_year = 2000
 end_year = 2023
-data = process_data(start_year, end_year)
 
-# Save the data to a JSON file
-file_path = os.path.join(save_dir, "game_results_MLB_2000_to_2023.json")
-with open(file_path, "w", encoding="utf-8") as f:
-    json.dump(data, f, ensure_ascii=False, indent=4)
-
-print(f"2000년부터 2023년까지의 경기 결과가 {file_path} 파일에 성공적으로 저장되었습니다.")
+for year in range(start_year, end_year + 1):
+    process_data(year)
