@@ -18,3 +18,4 @@ Strike Out : 삼진 : SO
 Average : 타율 : AVG
 On Base Percentage : 출루율 : OBP
 Slugging Average : 장타율 : SLG
+
