@@ -9,6 +9,21 @@ output_file = "C:\\DevTool\\BaseBall\\BaseBall_data_Crowling\\json\\yearTeamStat
 # 데이터를 가져올 연도 정의
 years = range(2000, 2024)
 
+# 필요한 키 매핑
+key_mapping = {
+    "GS": "gs",
+    "CG": "cg",
+    "SHO": "sho",
+    "S": "s",
+    "IP": "ip",
+    "ER": "er",
+    "R": "r",
+    "HR": "hr",
+    "BB": "bb",
+    "HP": "hp",
+    "SO": "so"
+}
+
 # 모든 데이터를 저장할 리스트 초기화
 all_data = []
 
@@ -22,10 +37,11 @@ def fetch_data_for_year(year):
     tables = soup.find_all("table")
     team_table = tables[1]  # 두 번째 테이블이 팀 기록 테이블
     
-    # 헤더에서 키값 추출
+    # 헤더에서 인덱스 매핑 추출
     headers = team_table.find_all("th")
-    keys = ["year"] + [header.text.strip() for header in headers if header.text.strip()]
-    
+    indices = {header.get("so"): idx for idx, header in enumerate(headers) if header.get("so") in key_mapping}
+    team_name_index = [idx for idx, header in enumerate(headers) if header.get_text(strip=True) == "Team"][0]
+
     # 테이블 행 추출
     rows = team_table.find_all("tr")[1:]  # 헤더 행은 제외
 
@@ -34,8 +50,10 @@ def fetch_data_for_year(year):
     for row in rows:
         cols = row.find_all("td")
         if len(cols) > 1:
-            values = [year] + [col.text.strip() for col in cols]
-            team_data = {keys[i]: values[i] for i in range(len(values))}
+            team_data = {"year": str(year)}
+            team_data["teamName"] = cols[team_name_index].text.strip()
+            for key, idx in indices.items():
+                team_data[key_mapping[key]] = cols[idx].text.strip()
             year_data.append(team_data)
     return year_data
 
@@ -49,4 +67,4 @@ for year in years:
 with open(output_file, "w", encoding="utf-8") as f:
     json.dump(all_data, f, ensure_ascii=False, indent=4)
 
-print(f"데이터가 {output_file}에 저장되었습니다.")
+print(f"데이터가 {output_file}에 저장되었습니다!")

@@ -9,6 +9,24 @@ output_file = "C:\\DevTool\\BaseBall\\BaseBall_data_Crowling\\json\\yearTeamStat
 # 데이터를 가져올 연도 정의
 years = range(2000, 2024)
 
+# 필요한 키 매핑
+key_mapping = {
+    "AB": "ab",
+    "R": "r",
+    "H": "h",
+    "2B": "2b",
+    "3B": "3b",
+    "HR": "hr",
+    "RBI": "rbi",
+    "SB": "sb",
+    "CS": "cs",
+    "BB": "bb",
+    "SO": "so",
+    "AVG": "avg",
+    "OBP": "obp",
+    "SLG": "slg"
+}
+
 # 모든 데이터를 저장할 리스트 초기화
 all_data = []
 
@@ -22,10 +40,16 @@ def fetch_data_for_year(year):
     tables = soup.find_all("table")
     team_table = tables[1]  # 두 번째 테이블이 팀 기록 테이블
     
-    # 헤더에서 키값 추출
+    # 헤더에서 인덱스 매핑 추출
     headers = team_table.find_all("th")
-    keys = ["year"] + [header.get_text(strip=True) for header in headers if header.get_text(strip=True) not in ["정렬", "비율"]]
-    
+    indices = {}
+    for idx, header in enumerate(headers):
+        so_value = header.get("so")
+        if so_value in key_mapping:
+            indices[so_value] = idx
+        if header.get_text(strip=True) == "Team":
+            team_name_index = idx
+
     # 테이블 행 추출
     rows = team_table.find_all("tr")[1:]  # 헤더 행은 제외
 
@@ -34,21 +58,16 @@ def fetch_data_for_year(year):
     for row in rows:
         cols = row.find_all("td")
         if len(cols) > 1:
-            values = [str(year)] + [col.get_text(strip=True) if col.get_text(strip=True) else "" for col in cols]
-            # keys와 values의 길이가 같은지 확인하고 맞추기
-            if len(values) == len(keys):
-                team_data = {keys[i]: values[i] for i in range(len(keys))}
-            else:
-                print(f"키와 값의 길이가 맞지 않습니다: {len(keys)} vs {len(values)}")
-                print(f"keys: {keys}")
-                print(f"values: {values}")
-                continue
+            team_data = {"year": str(year)}
+            team_data["teamName"] = cols[team_name_index].text.strip()
+            for key, idx in indices.items():
+                team_data[key_mapping[key]] = cols[idx].text.strip() if idx < len(cols) else ""
             year_data.append(team_data)
     return year_data
 
 # 연도를 순회하며 데이터 가져오기
 for year in years:
-    print(f"📅 {year}년 데이터 가져오는 중...")
+    print(f"{year}년 데이터 가져오는 중...")
     year_data = fetch_data_for_year(year)
     all_data.extend(year_data)
 
@@ -56,4 +75,4 @@ for year in years:
 with open(output_file, "w", encoding="utf-8") as f:
     json.dump(all_data, f, ensure_ascii=False, indent=4)
 
-print(f"✅ 데이터가 {output_file}에 저장되었습니다!")
+print(f"데이터가 {output_file}에 저장되었습니다!")
