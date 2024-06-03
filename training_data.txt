@@ -1,0 +1,14 @@
+ID: 112345
+Top Level Domain: 게임
+Level 2: 롤플레잉
+Level 3: 월드오브워크래프트
+Term: 부탱
+Sense Number: 1
+Definition: 메인 탱커를 보조하는 탱커라는 말로, 레이드와 같이 큰 규모의 전투가 진행될 때 방어를 담당하는 탱커 역할
+Part of Speech: NNG
+Backward Terms: 탱커
+Narrower Terms: None
+Related Terms: 보조탱커, 메인탱
+Facet: 역할
+
+================================================================================
