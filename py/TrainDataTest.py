@@ -1,6 +1,5 @@
 import json
 
-# 주어진 JSON 데이터
 data = {
   "data": [
     {
