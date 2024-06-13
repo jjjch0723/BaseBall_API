@@ -14,8 +14,8 @@ games_json = []
 if games:
     for game in games:
         games_json.append({
-            "away_team_id": game['away_id'],
-            "home_team_id": game['home_id'],
+            "away_team": game['away_id'],
+            "home_team": game['home_id'],
             "game_date": game['game_date']
         })
 else:
