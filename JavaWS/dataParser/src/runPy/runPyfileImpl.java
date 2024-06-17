@@ -19,6 +19,7 @@ public class runPyfileImpl implements runPyfile {
 	public void pyRunner(String path) {
 		try {
 			ProcessBuilder pb =new ProcessBuilder("python", path);
+			System.out.println(path);
 			pb.start();
 		}catch (Exception e) {
 			e.printStackTrace();
