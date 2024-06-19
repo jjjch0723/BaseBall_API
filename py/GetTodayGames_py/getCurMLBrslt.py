@@ -2,9 +2,11 @@ import statsapi
 import json
 from datetime import datetime, timedelta
 
-# 어제 날짜를 YYYYMMDD 형식으로 가져오기
+# 어제 날짜를 YYYY-MM-DD 형식으로 가져오기
 yesterday = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
-file_date = (datetime.today() - timedelta(days=1)).strftime('%Y%m%d')
+# 오늘 날짜를 YYYYMMDD 형식으로 가져오기
+today = datetime.today().strftime('%Y-%m-%d')
+file_date = datetime.today().strftime('%Y%m%d')
 
 # 어제 날짜로 경기 결과 가져오기
 games = statsapi.schedule(date=yesterday)
@@ -42,8 +44,7 @@ for game in games:
         "WINTEAM": str(win_team),
         "LOSETEAM": str(lose_team),
         "WINSCORE": str(win_score),
-        "LOSESCORE": str(lose_score),
-        "STATUS": status
+        "LOSESCORE": str(lose_score)
     }
     results.append(result)
 

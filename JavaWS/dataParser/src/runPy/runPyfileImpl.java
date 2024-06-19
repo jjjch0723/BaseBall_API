@@ -1,28 +1,35 @@
 package runPy;
 
 public class runPyfileImpl implements runPyfile {
-    // 일단은 절대경로로 지정
-    String mlbPypath = "";
-    String kboPypath = "";
-
     @Override
-    public void runMLBpy(String mlbPypath) {
-    	pyRunner(mlbPypath);
+    public void runMLBpy(String path) {
+    	pyRunner(path);
     }
 
     @Override
-    public void runKBOpy(String kboPypath) {
-        pyRunner(kboPypath);
+    public void runKBOpy(String path) {
+        pyRunner(path);
     }
+    
+	@Override
+	public void runMLBresultpy(String path) {
+		pyRunner(path);
+	}
 
+	@Override
+	public void runKBOresultpy(String path) {
+		pyRunner(path);
+	}
+	
 	@Override
 	public void pyRunner(String path) {
 		try {
 			ProcessBuilder pb =new ProcessBuilder("python", path);
-			System.out.println(path);
+			System.out.println("pyFile Path : " + path);
 			pb.start();
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
 }

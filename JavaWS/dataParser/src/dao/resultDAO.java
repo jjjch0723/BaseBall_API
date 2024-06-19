@@ -13,7 +13,7 @@ import config.connectionProvider;
 import jsonFileManager.getDay;
 import jsonFileManager.readManager.readJSONImpl;
 
-public class scheduleDAO {
+public class resultDAO {
 	Connection con = null;
 	PreparedStatement psmt = null;
 	Resultset rs = null;
@@ -21,12 +21,14 @@ public class scheduleDAO {
 	getDay gd = new getDay();
 	JDBCutil jdbCutil = new JDBCutil();
 	
-	public String createTemporaryMLBtbl() {
-		String sql = "CREATE TABLE baseball.TBL_MLBSCHEDULE_TTP ("
+	public String createTemporaryMLBresulttbl() {
+		String sql = "CREATE TABLE baseball.TBL_MLBRES_TTP ("
 				+ "    SEQ INT PRIMARY KEY AUTO_INCREMENT,"
-				+ "    TEAM1 TEXT,"
-				+ "    TEAM2 TEXT,"
-				+ "    DATE TEXT"
+				+ "    DATE TEXT,"
+				+ "    WINTEAM TEXT,"
+				+ "    LOSETEAM TEXT,"
+				+ "    WINSCORE TEXT,"
+				+ "    LOSESCORE TEXT"
 				+ ");";
 		try {
 			con = connectionProvider.getConnection();
@@ -43,12 +45,14 @@ public class scheduleDAO {
 		}
 	}
 
-	public String createTemporaryKBOtbl() {
-		String sql = "CREATE TABLE baseball.TBL_KBOSCHEDULE_TTP ("
+	public String createTemporaryKBOresulttbl() {
+		String sql = "CREATE TABLE baseball.TBL_KBORES_TTP ("
 				+ "    SEQ INT PRIMARY KEY AUTO_INCREMENT,"
-				+ "    TEAM1 TEXT,"
-				+ "    TEAM2 TEXT,"
-				+ "    DATE TEXT"
+				+ "    DATE TEXT,"
+				+ "    WINTEAM TEXT,"
+				+ "    LOSETEAM TEXT,"
+				+ "    WINSCORE TEXT,"
+				+ "    LOSESCORE TEXT"
 				+ ");";
 		try {
 			con = connectionProvider.getConnection();
@@ -64,8 +68,8 @@ public class scheduleDAO {
 		}
 	}
 	
-	public String dropMLBtbl() {
-	    String sql = "DROP TABLE IF EXISTS baseball.TBL_MLBSCHEDULE_TTP;";
+	public String dropMLBResulttbl() {
+	    String sql = "DROP TABLE IF EXISTS baseball.TBL_MLBRES_TTP;";
 	    try {
 	        con = connectionProvider.getConnection();
 	        psmt = con.prepareStatement(sql);
@@ -80,8 +84,8 @@ public class scheduleDAO {
 	    }
 	}
 	
-	public String dropKBOtbl() {
-	    String sql = "DROP TABLE IF EXISTS baseball.TBL_KBOSCHEDULE_TTP;";
+	public String dropKBOResulttbl() {
+	    String sql = "DROP TABLE IF EXISTS baseball.TBL_KBORES_TTP;";
 	    try {
 	        con = connectionProvider.getConnection();
 	        psmt = con.prepareStatement(sql);
@@ -95,10 +99,10 @@ public class scheduleDAO {
 	        JDBCutil.close(psmt);
 	    }
 	}
-	
-	public String insertTdyMLB() {
-	    String sql = "INSERT INTO TBL_MLBSCHEDULE_TTP (TEAM1, TEAM2, DATE) VALUES (?, ?, ?)";
-	    List<HashMap<String, Object>> glist = rj.readMLBfile(gd.getTomorrowdate());
+
+	public String insertResultMLB() {
+	    String sql = "INSERT INTO TBL_MLBRES_TTP (DATE, WINTEAM, LOSETEAM, WINSCORE, LOSESCORE) VALUES (?, ?, ?, ?, ?)";
+	    List<HashMap<String, Object>> glist = rj.readMLBrsltfile(gd.getTodaydate());
 	    Connection con = null;
 	    PreparedStatement psmt = null;
 	    
@@ -107,13 +111,17 @@ public class scheduleDAO {
 	        psmt = con.prepareStatement(sql);
 	        
 	        for (HashMap<String, Object> game : glist) {
-	            String team1 = (String) game.get("TEAM1");
-	            String team2 = (String) game.get("TEAM2");
 	            String date = (String) game.get("DATE");
+	            String winTeam = (String) game.get("WINTEAM");
+	            String loseTeam = (String) game.get("LOSETEAM");
+	            String winScore = (String) game.get("WINSCORE");
+	            String loseScore = (String) game.get("LOSESCORE");
 	            
-	            psmt.setString(1, team1);
-	            psmt.setString(2, team2);
-	            psmt.setString(3, date);
+	            psmt.setString(1, date);
+	            psmt.setString(2, winTeam);
+	            psmt.setString(3, loseTeam);
+	            psmt.setString(4, winScore);
+	            psmt.setString(5, loseScore);
 	            
 	            psmt.executeUpdate();
 	        }
@@ -128,28 +136,31 @@ public class scheduleDAO {
 		}
 	}
 	
-	public String insertTdyKBO() {
-	    String sql = "INSERT INTO TBL_KBOSCHEDULE_TTP (TEAM1, TEAM2, DATE) VALUES (?, ?, ?)";
-	    List<HashMap<String, Object>> glist = rj.readKBOfile(gd.getTodaydate());
+	public String insertResultKBO() {
+	    String sql = "INSERT INTO TBL_KBORES_TTP (DATE, WINTEAM, LOSETEAM, WINSCORE, LOSESCORE) VALUES (?, ?, ?, ?, ?)";
+	    List<HashMap<String, Object>> glist = rj.readKBOrsltfile(gd.getYesterdaydate());
 	    Connection con = null;
 	    PreparedStatement psmt = null;
-	    
+	    // System.out.println("DAO glist" + glist);
 	    try {
 	        con = connectionProvider.getConnection();
 	        psmt = con.prepareStatement(sql);
 	        
 	        for (HashMap<String, Object> game : glist) {
-	            String team1 = (String) game.get("TEAM1");
-	            String team2 = (String) game.get("TEAM2");
 	            String date = (String) game.get("DATE");
-	            
-	            psmt.setString(1, team1);
-	            psmt.setString(2, team2);
-	            psmt.setString(3, date);
+	            String winTeam = (String) game.get("WINTEAM");
+	            String loseTeam = (String) game.get("LOSETEAM");
+	            String winScore = (String) game.get("WINSCORE");
+	            String loseScore = (String) game.get("LOSESCORE");
+
+	            psmt.setString(1, date);
+	            psmt.setString(2, winTeam);
+	            psmt.setString(3, loseTeam);
+	            psmt.setString(4, winScore);
+	            psmt.setString(5, loseScore);
 	            
 	            psmt.executeUpdate();
 	        }
-	        
 	        return "Data inserted successfully.";
 	    } catch (SQLException e) {
 			e.printStackTrace();
