@@ -1,5 +1,21 @@
 import requests
 from bs4 import BeautifulSoup
+from datetime import datetime, timedelta
+import json
+
+# 팀 이름과 팀 코드를 매핑하는 딕셔너리
+team_id_map = {
+    "두산": 6002,
+    "LG": 5002,
+    "KT": 12001,
+    "SSG": 9002,
+    "NC": 11001,
+    "KIA": 2002,
+    "롯데": 3001,
+    "삼성": 1001,
+    "한화": 7002,
+    "키움": 10001
+}
 
 def get_game_results(year, month, day):
     url = f"https://statiz.sporki.com/schedule/?year={year}&month={month}"
@@ -64,25 +80,36 @@ def get_game_results(year, month, day):
                                 losing_score = span.get_text(strip=True)
                                 break
 
-                        game_info['winning_team'] = winning_team
-                        game_info['winning_score'] = winning_score
-                        game_info['losing_team'] = losing_team
-                        game_info['losing_score'] = losing_score
+                        # 팀 이름을 팀 코드로 매핑
+                        winning_team_code = str(team_id_map.get(winning_team, "Unknown"))
+                        losing_team_code = str(team_id_map.get(losing_team, "Unknown"))
+
+                        game_info = {
+                            "DATE": f"{year}-{month:02}-{day:02}",
+                            "WINTEAM": winning_team_code,
+                            "LOSETEAM": losing_team_code,
+                            "WINSCORE": winning_score,
+                            "LOSESCORE": losing_score
+                        }
 
                         results.append(game_info)
 
     return results
 
-# 사용 예제
-year = 2024
-month = 6
-day = 16
+# 어제 날짜 계산
+yesterday = datetime.today() - timedelta(days=1)
+year = yesterday.year
+month = yesterday.month
+day = yesterday.day
 
 game_results = get_game_results(year, month, day)
-if not game_results:
-    print("No game results found.")
+
+# JSON 파일로 저장
+if game_results:
+    file_name = f"{year}{month:02}{day:02}KBOresult.json"
+    file_path = f"C:\\DevTool\\BaseBall\\BaseBall_data_Crowling\\json\\todaysGames\\{file_name}"
+    with open(file_path, 'w', encoding='utf-8') as json_file:
+        json.dump(game_results, json_file, ensure_ascii=False, indent=4)
+    print(f"결과가 {file_path}에 저장되었습니다.")
 else:
-    for game in game_results:
-        print(f"Winning Team: {game['winning_team']} with Score: {game['winning_score']}")
-        print(f"Losing Team: {game['losing_team']} with Score: {game['losing_score']}")
-        print()
+    print("저장할 데이터가 없습니다.")
