@@ -41,7 +41,6 @@ public class resultDAO {
 		} finally {
 			JDBCutil.close(con);
 			JDBCutil.close(psmt);
-			
 		}
 	}
 

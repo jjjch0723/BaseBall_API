@@ -19,7 +19,7 @@ public class FilePathsUtil {
     	System.out.println("Json Path : " + Paths.BASEBALL_JSON_PATH + day + "MLBresult.json");
     	return Paths.BASEBALL_JSON_PATH + day + "MLBresult.json";
     }
-        //20240618MLBresult.json
+    
     public static String getKBOResultFilePath(String day) {
     	System.out.println("Json Path : " + Paths.BASEBALL_JSON_PATH + day + "KBOresult.json");
     	return Paths.BASEBALL_JSON_PATH + day + "KBOresult.json";
