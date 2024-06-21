@@ -1,0 +1,65 @@
+[
+    {
+        "DATE": "2024-06-20",
+        "WINTEAM": "109",
+        "LOSETEAM": "120",
+        "WINSCORE": "5",
+        "LOSESCORE": "2"
+    },
+    {
+        "DATE": "2024-06-20",
+        "WINTEAM": "114",
+        "LOSETEAM": "136",
+        "WINSCORE": "6",
+        "LOSESCORE": "3"
+    },
+    {
+        "DATE": "2024-06-20",
+        "WINTEAM": "139",
+        "LOSETEAM": "142",
+        "WINSCORE": "7",
+        "LOSESCORE": "6"
+    },
+    {
+        "DATE": "2024-06-20",
+        "WINTEAM": "117",
+        "LOSETEAM": "145",
+        "WINSCORE": "5",
+        "LOSESCORE": "3"
+    },
+    {
+        "DATE": "2024-06-20",
+        "WINTEAM": "119",
+        "LOSETEAM": "115",
+        "WINSCORE": "5",
+        "LOSESCORE": "3"
+    },
+    {
+        "DATE": "2024-06-20",
+        "WINTEAM": "118",
+        "LOSETEAM": "133",
+        "WINSCORE": "3",
+        "LOSESCORE": "2"
+    },
+    {
+        "DATE": "2024-06-20",
+        "WINTEAM": "110",
+        "LOSETEAM": "147",
+        "WINSCORE": "17",
+        "LOSESCORE": "5"
+    },
+    {
+        "DATE": "2024-06-20",
+        "WINTEAM": "138",
+        "LOSETEAM": "137",
+        "WINSCORE": "6",
+        "LOSESCORE": "5"
+    },
+    {
+        "DATE": "2024-06-20",
+        "WINTEAM": "135",
+        "LOSETEAM": "158",
+        "WINSCORE": "7",
+        "LOSESCORE": "6"
+    }
+]
