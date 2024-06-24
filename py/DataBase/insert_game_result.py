@@ -34,8 +34,8 @@ def insert_data(cursor, table_name, data):
 
 # JSON 파일을 로드하고 처리
 file_paths = {
-    'KBO_game_result': r'C:\DevTool\BaseBall\BaseBall_data_Crowling\json\game_result_00~23\game_result_KBO_2000_to_2023.json',
-    'MLB_game_result': r'C:\DevTool\BaseBall\BaseBall_data_Crowling\json\game_result_00~23\game_result_MLB_2000_to_2023.json',
+    'KBO_game_result': r'C:\DevTool\BaseBall\BaseBall_data_Crowling\json\game_result_00~23\game_result_KBO_2000_to_2023_teamCode.json',
+    'MLB_game_result': r'C:\DevTool\BaseBall\BaseBall_data_Crowling\json\game_result_00~23\game_result_MLB_2000_to_2023_teamCode.json',
 }
 
 for table_name, file_path in file_paths.items():
