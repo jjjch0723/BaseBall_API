@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 import json
+import os
 
 # 팀 이름을 ID로 매핑
 team_id_map = {
@@ -55,8 +56,10 @@ for td in tds:
                     }
                     today_schedule.append(game_info)
 
+# 현재 스크립트 파일의 디렉토리 경로
+current_dir = os.path.dirname(os.path.abspath(__file__))
 # JSON 파일로 저장
-file_path = f"C:/DevTool/BaseBall/BaseBall_data_Crowling/json/todaysGames/{now.strftime('%Y%m%d')}KBOgames.json"
+file_path = os.path.join(current_dir, f"json/todaysGames/{now.strftime('%Y%m%d')}KBOgames.json")
 with open(file_path, "w", encoding="utf-8") as json_file:
     json.dump(today_schedule, json_file, ensure_ascii=False, indent=4)
 

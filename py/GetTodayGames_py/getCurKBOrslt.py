@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 import json
+import os
 
 # 팀 이름과 팀 코드를 매핑하는 딕셔너리
 team_id_map = {
@@ -107,7 +108,8 @@ game_results = get_game_results(year, month, day)
 # JSON 파일로 저장
 if game_results:
     file_name = f"{year}{month:02}{day:02}KBOresult.json"
-    file_path = f"C:\\DevTool\\BaseBall\\BaseBall_data_Crowling\\json\\todaysGames\\{file_name}"
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(current_dir, '..', '..', 'json', 'todaysGames', file_name)
     with open(file_path, 'w', encoding='utf-8') as json_file:
         json.dump(game_results, json_file, ensure_ascii=False, indent=4)
     print(f"결과가 {file_path}에 저장되었습니다.")

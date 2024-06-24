@@ -1,6 +1,7 @@
 import json
 import statsapi
 from datetime import datetime, timedelta
+import os
 
 # 한국 시간 기준으로 현재 날짜 가져오기
 now_kst = datetime.now() + timedelta(hours=14)
@@ -21,8 +22,10 @@ if games:
 else:
     games_json = {"message": "오늘은 경기가 없습니다."}
 
+# 현재 스크립트 파일의 디렉토리 경로
+current_dir = os.path.dirname(os.path.abspath(__file__))
 # 파일 경로 및 이름 설정
-file_path = f"C:/DevTool/BaseBall/BaseBall_data_Crowling/json/todaysGames/{now_kst.strftime('%Y%m%d')}MLBgames.json"
+file_path = os.path.join(current_dir, f"json/todaysGames/{now_kst.strftime('%Y%m%d')}MLBgames.json")
 
 # JSON 데이터를 파일로 저장
 with open(file_path, 'w', encoding='utf-8') as f:

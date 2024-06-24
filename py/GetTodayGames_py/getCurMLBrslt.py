@@ -1,6 +1,7 @@
 import statsapi
 import json
 from datetime import datetime, timedelta
+import os
 
 # 어제 날짜를 YYYY-MM-DD 형식으로 가져오기
 yesterday = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
@@ -54,8 +55,12 @@ if results:
 else:
     print("어제 완료된 경기를 찾을 수 없습니다.")
 
+# 현재 스크립트 파일의 디렉토리 경로
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# 파일 경로 및 이름 설정
+file_path = os.path.join(current_dir, f"json/todaysGames/{file_date}MLBresult.json")
+
 # 결과를 저장
-file_path = f"C:\\DevTool\\BaseBall\\BaseBall_data_Crowling\\json\\todaysGames\\{file_date}MLBresult.json"
 with open(file_path, 'w') as json_file:
     json.dump(results, json_file, indent=4)
 print(f"결과가 {file_path}에 저장되었습니다.")
