@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.game</groupId>
 	<artifactId>baseball</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.7</version>
 	<name>baseball</name>
 	<description>springbootboard</description>
 	<properties>

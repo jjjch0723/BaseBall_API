@@ -1,4 +1,4 @@
-package com.game.baseball.api.service;
+  package com.game.baseball.api.service;
 
 import java.util.List;
 import java.util.Map;

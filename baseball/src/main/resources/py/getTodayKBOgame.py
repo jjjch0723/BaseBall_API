@@ -57,7 +57,8 @@ for td in tds:
                     today_schedule.append(game_info)
 
 # JSON 파일로 저장
-file_path = f"C:\\DevTool\\workspace\\baseball\\src\\main\\resources\\json\\todaysGames\\{now.strftime('%Y%m%d')}KBOgames.json"
+base_dir = os.path.dirname(__file__)
+file_path = os.path.join(base_dir, 'json', 'todaysGames', f'{now.strftime("%Y%m%d")}KBOgames.json')
 os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
 with open(file_path, "w", encoding="utf-8") as json_file:

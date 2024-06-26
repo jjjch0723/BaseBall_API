@@ -22,8 +22,8 @@ if games:
 else:
     games_json = {"message": "오늘은 경기가 없습니다."}
 
-# 절대 경로로 파일 경로 및 이름 설정
-base_dir = "C:/DevTool/workspace/baseball/src/main/resources"
+# 상대 경로로 파일 경로 및 이름 설정
+base_dir = os.path.dirname(__file__)
 file_path = os.path.join(base_dir, 'json', 'todaysGames', f'{now_kst.strftime("%Y%m%d")}MLBgames.json')
 
 # JSON 데이터를 파일로 저장

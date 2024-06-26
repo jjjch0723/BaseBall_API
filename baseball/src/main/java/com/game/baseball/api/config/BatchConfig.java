@@ -50,6 +50,7 @@ public class BatchConfig {
 
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
     public void perform() {
+        logger.info("Trigger Test");
         try {
             logger.info("Batch Job is started at {}", System.currentTimeMillis());
 

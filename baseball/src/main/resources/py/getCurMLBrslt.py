@@ -56,7 +56,10 @@ else:
     print("어제 완료된 경기를 찾을 수 없습니다.")
 
 # 결과를 저장
-file_path = f"C:\\DevTool\\workspace\\baseball\\src\\main\\resources\\json\\todaysGames\\{file_date}MLBresult.json"
-with open(file_path, 'w') as json_file:
+base_dir = os.path.dirname(__file__)
+file_path = os.path.join(base_dir, 'json', 'todaysGames', f'{file_date}MLBresult.json')
+os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+with open(file_path, 'w', encoding='utf-8') as json_file:
     json.dump(results, json_file, indent=4)
 print(f"결과가 {file_path}에 저장되었습니다.")

@@ -107,7 +107,7 @@ game_results = get_game_results(year, month, day)
 
 # JSON 파일로 저장
 file_name = f"{year}{month:02}{day:02}KBOresult.json"
-base_dir = "C:/DevTool/workspace/baseball/src/main/resources"
+base_dir = os.path.dirname(__file__)
 file_path = os.path.join(base_dir, 'json', 'todaysGames', file_name)
 os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
