@@ -45,4 +45,4 @@ __baseball-1.1.0.jar__ *파일의 경로, DBconnecting, Schedule시간 조정을
 ***
 ## Update 방향성
 * Rest API로 변경 예정.
-* 파일의 경로, Scheduling시간 및 DB설정을 사용자가 입력하여 지정.
+* ~~파일의 경로, Scheduling시간 및 DB설정을 사용자가 입력하여 지정.~~
