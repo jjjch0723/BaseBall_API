@@ -13,10 +13,10 @@ MLB 데이터 크롤링 사용 API : [(https://pypi.org/project/MLB-StatsAPI/)]
 ~~baseball-1.0.0.jar~~ *Paths에 문제가 있어 사용하지 않습니다.*
 
 ### 2024.06.26
-~~baseball-1.0.7.jar~~ *경로 문제 해결 및 스케쥴링을 추가하였습니다.*
+~~baseball-1.0.7.jar~~ *Paths 문제 해결 및 Scheduling을 추가하였습니다.*
 
 ### 2024.06.28
-__baseball-1.1.0.jar__ *파일의 경로, DBconnecting, Schedule시간 조정을 메인 프로젝트에서 변경 가능하도록 하였습니다.*
+__baseball-1.1.0.jar__ *파일의 Paths, DBconnection, Schedule시간 조정을 메인 프로젝트에서 변경 가능하도록 하였습니다.*
 
 
 
