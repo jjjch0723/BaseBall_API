@@ -1,4 +1,4 @@
-  package com.game.baseball.api.service;
+package com.game.baseball.api.service;
 
 import java.util.List;
 import java.util.Map;
@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.game.baseball.api.config.Paths;
+import com.game.baseball.api.config.FilePathsUtil;
 import com.game.baseball.api.dao.BaseBallDaoImpl;
 import com.game.baseball.api.jsonFileManager.getDay;
 import com.game.baseball.api.jsonFileManager.readManager.readJSONImpl;
@@ -31,13 +31,16 @@ public class SchedulePyRunnerImpl implements PyRunner {
     @Autowired
     private runPyfileImpl rpi;
 
+    @Autowired
+    private FilePathsUtil filePathsUtil;
+
     @Override
     public void pyRunner() {
         String tdy = gd.getTodaydate();
         String tmr = gd.getTomorrowdate();
 
-        String mlbPyPath = Paths.MLB_PY_PATH;
-        String kboPyPath = Paths.KBO_PY_PATH;
+        String mlbPyPath = filePathsUtil.getMlbSchedulePyPath();
+        String kboPyPath = filePathsUtil.getKboSchedulePyPath();
 
         logger.info("Running MLB schedule script at path: {}", mlbPyPath);
         rpi.pyRunner(mlbPyPath);

@@ -1,0 +1,52 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.game:baseball:jar:1.2.1
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.springframework.boot:spring-boot-starter-batch:jar -> duplicate declaration of version (?) @ line 84, column 15
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] -------------------------< com.game:baseball >--------------------------
+[INFO] Building baseball 1.2.1
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ baseball ---
+[INFO] Deleting C:\DevTool\workspace\baseball\target
+[INFO] 
+[INFO] --- resources:3.2.0:resources (default-resources) @ baseball ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] Copying 1 resource
+[INFO] Copying 10 resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ baseball ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 19 source files to C:\DevTool\workspace\baseball\target\classes
+[INFO] 
+[INFO] --- resources:3.2.0:testResources (default-testResources) @ baseball ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] skip non existing resourceDirectory C:\DevTool\workspace\baseball\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ baseball ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to C:\DevTool\workspace\baseball\target\test-classes
+[INFO] 
+[INFO] --- surefire:2.22.2:test (default-test) @ baseball ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.game.baseball.BaseballApplicationTests
+15:53:51.879 [main] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating CacheAwareContextLoaderDelegate from class [org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate]
+15:53:51.887 [main] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating BootstrapContext using constructor [public org.springframework.test.context.support.DefaultBootstrapContext(java.lang.Class,org.springframework.test.context.CacheAwareContextLoaderDelegate)]
+15:53:51.915 [main] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating TestContextBootstrapper for test class [com.game.baseball.BaseballApplicationTests] from class [org.springframework.boot.test.context.SpringBootTestContextBootstrapper]
+15:53:51.923 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Neither @ContextConfiguration nor @ContextHierarchy found for test class [com.game.baseball.BaseballApplicationTests], using SpringBootContextLoader
+15:53:51.927 [main] DEBUG org.springframework.test.context.support.AbstractContextLoader - Did not detect default resource location for test class [com.game.baseball.BaseballApplicationTests]: class path resource [com/game/baseball/BaseballApplicationTests-context.xml] does not exist
+15:53:51.927 [main] DEBUG org.springframework.test.context.support.AbstractContextLoader - Did not detect default resource location for test class [com.game.baseball.BaseballApplicationTests]: class path resource [com/game/baseball/BaseballApplicationTestsContext.groovy] does not exist
+15:53:51.927 [main] INFO org.springframework.test.context.support.AbstractContextLoader - Could not detect default resource locations for test class [com.game.baseball.BaseballApplicationTests]: no resource found for suffixes {-context.xml, Context.groovy}.
+15:53:51.928 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.game.baseball.BaseballApplicationTests]: BaseballApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+15:53:51.961 [main] DEBUG org.springframework.test.context.support.ActiveProfilesUtils - Could not find an 'annotation declaring class' for annotation type [org.springframework.test.context.ActiveProfiles] and class [com.game.baseball.BaseballApplicationTests]

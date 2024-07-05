@@ -103,4 +103,24 @@ public class BaseBallDaoImpl implements BaseBallDao {
     public void moveTempKBOResultToMainTable() {
         baseBallMapper.moveTempKBOResultToMainTable();
     }
+
+	@Override
+	public void createTemporaryGPTAnly() {
+		baseBallMapper.createTemporaryGPTAnly();
+	}
+
+	@Override
+	public void dropGPTAnlytbl() {
+		baseBallMapper.dropGPTAnlytbl();
+	}
+
+	@Override
+	public void insertTdyExepect(List<Map<String, Object>> params) {
+		baseBallMapper.insertTdyExepect(params);
+	}
+
+	@Override
+	public void moveTempGPTexepectToMainTable() {
+		baseBallMapper.moveTempGPTexepectToMainTable();
+	}
 }

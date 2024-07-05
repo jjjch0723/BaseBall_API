@@ -32,6 +32,11 @@ public class runPyfileImpl implements runPyfile {
         pyRunner(path);
     }
 
+	@Override
+	public void runGPTexepectpy(String path) {
+		pyRunner(path);
+	}
+	
     @Override
     public void pyRunner(String path) {
         try {

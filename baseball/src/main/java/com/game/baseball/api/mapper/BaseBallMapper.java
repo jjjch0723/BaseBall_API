@@ -1,5 +1,6 @@
 package com.game.baseball.api.mapper;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -28,4 +29,12 @@ public interface BaseBallMapper {
     void moveTempMLBResultToMainTable();
     void moveTempKBOResultToMainTable();
 	// 임시테이블 데이터 노말 테이블로 데이터 삽입 끝
+    
+	// gpt예상 결과
+	void createTemporaryGPTAnly();
+	void dropGPTAnlytbl();
+	void insertTdyExepect(List<Map<String, Object>> params);
+	void moveTempGPTexepectToMainTable();
+	// gpt예상 결과 끝
+    
 }

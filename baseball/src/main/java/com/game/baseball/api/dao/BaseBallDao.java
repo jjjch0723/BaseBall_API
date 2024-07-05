@@ -26,4 +26,11 @@ public interface BaseBallDao {
 	void moveTempMLBResultToMainTable();
 	void moveTempKBOResultToMainTable();
 	//
+	
+	// gpt예상 결과
+	void createTemporaryGPTAnly();
+	void dropGPTAnlytbl();
+	void insertTdyExepect(List<Map<String, Object>> params);
+	void moveTempGPTexepectToMainTable();
+	//
 }

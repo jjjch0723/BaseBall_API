@@ -14,14 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.annotation.SchedulingConfigurer;
+import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import com.game.baseball.api.service.CombinedTasklet;
 
 @Configuration
 @EnableBatchProcessing
 @EnableScheduling
-public class BatchConfig {
+public class BatchConfig implements SchedulingConfigurer{
 
     private static final Logger logger = LoggerFactory.getLogger(BatchConfig.class);
 
@@ -34,9 +35,13 @@ public class BatchConfig {
     @Autowired
     private JobLauncher jobLauncher;
 
+    // 일정 및 경기 기록을 들고옴
     @Autowired
-    private CombinedTasklet combinedTasklet;
+    private CombinedTasklet combinedTasklet; 
 
+    @Autowired
+    private ExternalConfig externalConfig;
+    
     @Bean
     public Job job() {
         Step step = stepBuilderFactory.get("step")
@@ -48,9 +53,14 @@ public class BatchConfig {
                 .build();
     }
 
-    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
+    @Override
+    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+    	taskRegistrar.addCronTask(this::perform, externalConfig.getScheduleCron());
+    }
+    
+
     public void perform() {
-        logger.info("Trigger Test");
+        logger.info("Batch will start.");
         try {
             logger.info("Batch Job is started at {}", System.currentTimeMillis());
 

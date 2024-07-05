@@ -20,6 +20,8 @@ public class CombinedTasklet implements Tasklet {
     @Autowired
     private SchedulePyRunnerImpl schedulePyRunner;
 
+    @Autowired
+    private GptPyRunnerImpl gptPyRunner;
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         logger.info("Starting schedule processing");
@@ -30,6 +32,9 @@ public class CombinedTasklet implements Tasklet {
         resultPyRunner.pyRunner();
         logger.info("Result processing completed");
 
+        logger.info("Starting exepect processing");
+        gptPyRunner.pyRunner();
+        logger.info("Exepect processing completed");
         return RepeatStatus.FINISHED;
     }
 }

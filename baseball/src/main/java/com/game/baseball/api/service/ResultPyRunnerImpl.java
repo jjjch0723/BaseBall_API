@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.game.baseball.api.config.Paths;
+import com.game.baseball.api.config.FilePathsUtil;
 import com.game.baseball.api.dao.BaseBallDaoImpl;
 import com.game.baseball.api.jsonFileManager.getDay;
 import com.game.baseball.api.jsonFileManager.readManager.readJSONImpl;
@@ -32,14 +32,17 @@ public class ResultPyRunnerImpl implements PyRunner {
     @Autowired
     private runPyfileImpl rpi;
 
+    @Autowired
+    private FilePathsUtil filePathsUtil;
+
     @Override
     @Transactional
     public void pyRunner() {
         String tdy = gd.getTodaydate();
         String ysd = gd.getYesterdaydate();
 
-        String mlbPyPath = Paths.MLB_RSLT_PY_PATH;
-        String kboPyPath = Paths.KBO_RSLT_PY_PATH;
+        String mlbPyPath = filePathsUtil.getMlbResultPyPath();
+        String kboPyPath = filePathsUtil.getKboResultPyPath();
 
         logger.info("Running MLB result script at path: {}", mlbPyPath);
         rpi.pyRunner(mlbPyPath);
