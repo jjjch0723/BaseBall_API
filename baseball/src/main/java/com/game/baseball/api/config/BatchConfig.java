@@ -58,7 +58,6 @@ public class BatchConfig implements SchedulingConfigurer{
     	taskRegistrar.addCronTask(this::perform, externalConfig.getScheduleCron());
     }
     
-
     public void perform() {
         logger.info("Batch will start.");
         try {

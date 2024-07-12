@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.game.baseball.api.config.BatchConfig;
+import com.game.baseball.api.service.GptPyRunnerImpl;
 import com.game.baseball.api.service.PyRunner;
 
 @RestController
@@ -30,6 +31,10 @@ public class BaseBallController {
     @Qualifier("resultPyRunnerImpl")
     private PyRunner resultPyRunner;
 
+    @Autowired
+    @Qualifier("gptPyRunnerImpl")
+    private PyRunner gptPyRunner; 
+    
     @Autowired
     private BatchConfig batchConfig;
 
@@ -53,6 +58,14 @@ public class BaseBallController {
         return "Results processing started";
     }
 
+    @PostMapping("/exepect/process")
+    public String processExepect() {
+    	logger.info("processExepect() called");
+    	gptPyRunner.pyRunner();
+    	return "Exepect processing started";
+    }
+    
+    
     @PostMapping("/batch/run")
     public String runBatchJob() {
         logger.info("runBatchJob() called");

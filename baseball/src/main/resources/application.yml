@@ -4,15 +4,9 @@ spring:
     allow-circular-references: true
   application:
     name: baseball
-    version: 1.1.0
+    version: 1.2.1
 
-  datasource:
-    url: jdbc:mysql://192.168.0.78:3306/testDB?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
-    username: studyuser
-    password: 1111
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    hikari:
-      maximum-pool-size: 10
+
 
   batch:
     jdbc:
@@ -27,6 +21,7 @@ logging:
 server:
   servlet:
     session:
+      context-path: baseball
       timeout: 1m
 
 mybatis:
@@ -34,15 +29,18 @@ mybatis:
   type-aliases-package: com.game.baseball.model
 
 file:
-  path: src/main/resources/py/json/todaysGames
+  path: /home/baseball/src/main/resources/py/json/todaysGames
 
 py:
   paths:
     mlb:
-      schedule: src/main/resources/py/getTodayMLBgame.py
-      result: src/main/resources/py/getCurMLBrslt.py
+      schedule: /home/baseball/src/main/resources/py/getTodayMLBgame.py
+      result: /home/baseball/src/main/resources/py/getCurMLBrslt.py
     kbo:
-      schedule: src/main/resources/py/getTodayKBOgame.py
-      result: src/main/resources/py/getCurKBOrslt.py
+      schedule: /home/baseball/src/main/resources/py/getTodayKBOgame.py
+      result: /home/baseball/src/main/resources/py/getCurKBOrslt.py
     gpt:
-      exepect: src/main/resources/py/getBaseBallRating.py
+      exepect: /home/baseball/src/main/resources/py/getBaseBallRating.py
+
+schedule:
+  cron: "0 0 * * * ?"

@@ -1,4 +1,3 @@
-// ExternalConfigImpl.java
 package com.game.baseball.api.config;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -7,13 +6,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ExternalConfigImpl implements ExternalConfig {
 
-    @Value("${db.url}")
+    @Value("${spring.datasource.url}")
     private String dbUrl;
 
-    @Value("${db.username}")
+    @Value("${spring.datasource.username}")
     private String dbUserName;
 
-    @Value("${db.password}")
+    @Value("${spring.datasource.password}")
     private String dbUserPass;
 
     @Value("${schedule.cron}")
@@ -47,10 +46,10 @@ public class ExternalConfigImpl implements ExternalConfig {
         return dbUserName;
     }
     
-	@Override
-	public String getDbUserPass() {
-		return dbUserPass;
-	}
+    @Override
+    public String getDbUserPass() {
+        return dbUserPass;
+    }
     
     @Override
     public String getScheduleCron() {
@@ -61,6 +60,7 @@ public class ExternalConfigImpl implements ExternalConfig {
     public String getFilePath() {
         return filePath;
     }
+    
     @Override
     public String getMlbSchedulePyPath() {
         return mlbSchedulePyPath;
@@ -81,10 +81,8 @@ public class ExternalConfigImpl implements ExternalConfig {
         return kboResultPyPath;
     }
 
-	@Override
-	public String getGptExepectPyPath() {
-		// TODO Auto-generated method stub
-		return gptExepectPyPath;
-	}
-
+    @Override
+    public String getGptExepectPyPath() {
+        return gptExepectPyPath;
+    }
 }
