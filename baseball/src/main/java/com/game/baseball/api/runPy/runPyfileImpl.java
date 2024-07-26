@@ -40,7 +40,7 @@ public class runPyfileImpl implements runPyfile {
     @Override
     public void pyRunner(String path) {
         try {
-            ProcessBuilder pb = new ProcessBuilder("python", path);
+            ProcessBuilder pb = new ProcessBuilder("/home/baseball/venv/bin/python3.12", path);
             logger.info("Running Python script: {}", path);
             pb.redirectErrorStream(true);
             Process process = pb.start();

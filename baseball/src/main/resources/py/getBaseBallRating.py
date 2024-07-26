@@ -3,6 +3,7 @@ import openai
 import mysql.connector
 import time
 import os
+import psycopg2
 
 openai.api_key = ''
 
@@ -51,20 +52,21 @@ team_id_map = {
 }
 
 def getKBOData():
-    conn = mysql.connector.connect(
-        host='192.168.0.78',
-        user='studyuser',
-        password='1111',
-        database='baseball'
-    )
+    conn = psycopg2.connect(
+            host='',
+            port='5432',
+            user='',
+            password='',
+            database='postgres'
+        )
 
     cursor = conn.cursor()
 
     kbosql = '''
-    SELECT ttm2.TEAMNAME_KR, ttm1.TEAMNAME_KR, tkt.`DATE`
-    FROM TBL_KBOSCHEDULE_TTP tkt 
-    INNER JOIN TBL_TEAM_MT01 ttm1 ON tkt.TEAM1 = ttm1.TEAM_CODE 
-    INNER JOIN TBL_TEAM_MT01 ttm2 ON tkt.TEAM2 = ttm2.TEAM_CODE 
+    select ttm1.teamname_kr, ttm2.teamname_kr, tkt.game_date
+    from tbl_kboschedule_ttp tkt 
+    inner join tbl_team_mt01 ttm1 on tkt.team1 = ttm1.team_code 
+    inner join tbl_team_mt01 ttm2 on tkt.team2 = ttm2.team_code 
     '''
 
     cursor.execute(kbosql)
@@ -88,20 +90,21 @@ def getKBOData():
     return json_data
 
 def getMLBData():
-    conn = mysql.connector.connect(
-        host='192.168.0.78',
-        user='studyuser',
-        password='1111',
-        database='baseball'
-    )
+    conn = psycopg2.connect(
+            host='',
+            port='5432',
+            user='',
+            password='',
+            database='postgres'
+        )
 
     cursor = conn.cursor()
 
     mlbsql = '''
-    SELECT ttm2.TEAMNAME_KR, ttm1.TEAMNAME_KR, tkt.`DATE`
-    FROM TBL_MLBSCHEDULE_TTP tkt 
-    INNER JOIN TBL_TEAM_MT01 ttm1 ON tkt.TEAM1 = ttm1.TEAM_CODE 
-    INNER JOIN TBL_TEAM_MT01 ttm2 ON tkt.TEAM2 = ttm2.TEAM_CODE 
+    select ttm1.teamname_kr, ttm2.teamname_kr, tkt.game_date
+    from tbl_mlbschedule_ttp tkt 
+    inner join tbl_team_mt01 ttm1 on tkt.team1 = ttm1.team_code 
+    inner join tbl_team_mt01 ttm2 on tkt.team2 = ttm2.team_code 
     '''
 
     cursor.execute(mlbsql)
@@ -166,8 +169,14 @@ def store_analysis_to_file(game_analysis, filename='game_analysis.json'):
     file_path = os.path.join(base_dir, 'json', 'todaysGames', filename)
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
+    # JSON 파일 작성
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump(game_analysis, f, ensure_ascii=False, indent=4)
+
+    # 파일 소유자 및 권한 설정
+    os.system(f'sudo chown tomcat:tomcat {file_path}')
+    os.system(f'sudo chmod 777 {file_path}')
+    
     print(f"Analysis results stored in {file_path}")
 
 def getAnalysis(getDataFunction):
@@ -196,8 +205,8 @@ def getAnalysis(getDataFunction):
             f"Response example: \n"
             f"{team1_name} 승률: 50%\n"
             f"{team2_name} 승률: 50%\n"
-            f"{team1_name} 점수: xx 점\n"
-            f"{team2_name} 점수: xx 점\n"
+            f"{team1_name} 점수: xx점\n"
+            f"{team2_name} 점수: xx점\n"
             f"{team1_name} 주요선수: {team1_name} player, {team1_name} player\n"
             f"{team2_name} 주요선수: {team2_name} player, {team2_name} player\n"
             f"{team1_name} 과 {team2_name}의 경기분석: analysis content\n"
@@ -207,7 +216,7 @@ def getAnalysis(getDataFunction):
         while not success:
             try:
                 response = openai.ChatCompletion.create(
-                    model="gpt-3.5-turbo",
+                    model="gpt-4o-mini",
                     messages=[
                         {"role": "system", "content": "You are an assistant that analyzes baseball games by searching the internet for various information based on the given parameters."},
                         {"role": "user", "content": prompt}
@@ -227,8 +236,8 @@ def getAnalysis(getDataFunction):
                         'TEAM2': parsed_analysis['team2_name'],
                         'TEAM1_WINRATE': parsed_analysis['team1_win_rate'],
                         'TEAM2_WINRATE': parsed_analysis['team2_win_rate'],
-                        'TEAM1_SCROE': parsed_analysis['team1_score'],
-                        'TEAM2_SCROE': parsed_analysis['team2_score'],
+                        'TEAM1_SCORE': parsed_analysis['team1_score'],
+                        'TEAM2_SCORE': parsed_analysis['team2_score'],
                         'GAME_ANALYSIS': parsed_analysis['game_analysis']
                     }
                     games_analysis.append(game_analysis)
@@ -244,8 +253,7 @@ def getAnalysis(getDataFunction):
         print("No analysis results were generated.")
     else:
         print(f"Generated analysis for {len(games_analysis)} games.")
-        store_analysis_to_file(games_analysis)
-
+        
     return games_analysis, failed_games
 
 # 분석 결과 출력
@@ -271,8 +279,12 @@ if __name__ == '__main__':
 
     if all_analysis_results:
         print(json.dumps(all_analysis_results, ensure_ascii=False, indent=4))
+        # JSON 파일로 저장
+        store_analysis_to_file(all_analysis_results, filename='game_analysis.json')
     else:
         print("No analysis results found.")
 
-    # JSON 파일로 저장
-    store_analysis_to_file(all_analysis_results, filename='game_analysis.json')
+
+
+
+# gpt한테 선수값들 다 넘겨주기. 언제하지 잉잉이이이잉이이이잉

@@ -20,7 +20,7 @@ if games:
             "game_date": game['game_date']
         })
 else:
-    games_json = {"message": "오늘은 경기가 없습니다."}
+    games_json = {}
 
 # 상대 경로로 파일 경로 및 이름 설정
 base_dir = os.path.dirname(__file__)

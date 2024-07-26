@@ -1,8 +1,11 @@
 package com.game.baseball.api.jsonFileManager.readManager;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -140,29 +143,43 @@ public class readJSONImpl implements readJSON {
         return glist;
     }
 
-	@Override
-	public List<Map<String, Object>> readGPTExecpet() {
-		String gptFilePath = filePathsUtil.getGPTexecptFilePath();
-		System.out.println("gpt의 예상 결과를 가져옵니다.");
-		ObjectMapper objMapper = new ObjectMapper();
-		List<Map<String, Object>> glist = null;
-		
-		try {
-			File file = new File(gptFilePath);
-			if(!file.exists()) {
-				System.out.println("GPT execpt file not found: " + gptFilePath);
+    @Override
+    public List<Map<String, Object>> readGPTExecpet() {
+        String gptFilePath = filePathsUtil.getGPTexecptFilePath();
+        System.out.println("gpt의 예상 결과를 가져옵니다.");
+        ObjectMapper objMapper = new ObjectMapper();
+        List<Map<String, Object>> glist = null;
+
+        try {
+            File file = new File(gptFilePath);
+            if (!file.exists()) {
+                System.out.println("GPT execpt file not found: " + gptFilePath);
                 return null;
-			}
-			
-			glist = objMapper.readValue(file, new TypeReference<List<Map<String, Object>>>() {});
+            }
+
+            glist = objMapper.readValue(file, new TypeReference<List<Map<String, Object>>>() {});
             if (glist.isEmpty()) {
                 System.out.println("Empty GPT execpt file: " + gptFilePath);
                 return null;
             }
-            
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		return glist;
-	}
+
+            // 중복 제거 로직
+            Set<String> uniqueKeys = new HashSet<>();
+            List<Map<String, Object>> distinctList = new ArrayList<>();
+
+            for (Map<String, Object> item : glist) {
+                String uniqueKey = item.get("TEAM1") + "_" + item.get("TEAM2") + "_" + item.get("DATE");
+                if (!uniqueKeys.contains(uniqueKey)) {
+                    uniqueKeys.add(uniqueKey);
+                    distinctList.add(item);
+                }
+            }
+
+            glist = distinctList;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return glist;
+    }
 }

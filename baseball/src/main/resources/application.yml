@@ -5,23 +5,36 @@ spring:
   application:
     name: baseball
     version: 1.2.1
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
 
-
+  datasource:
+    url: jdbc:postgresql:// /baseball
+    username: 
+    password: 
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
 
   batch:
     jdbc:
       initialize-schema: always
     job:
       enabled: false
-
+  
 logging:
   level:
     root: info
     com.game.baseball: debug
+  file:
+    name: /var/log/myapp/baseball.log
+
 server:
   servlet:
+    context-path: ""  # root context path로 설정
     session:
-      context-path: baseball
       timeout: 1m
 
 mybatis:
@@ -43,4 +56,4 @@ py:
       exepect: /home/baseball/src/main/resources/py/getBaseBallRating.py
 
 schedule:
-  cron: "0 0 * * * ?"
+  cron: "0 0 0 * * *"
