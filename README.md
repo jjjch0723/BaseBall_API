@@ -8,7 +8,7 @@ batch프로그램은 서버에 service로 등록되어 매일 오전 10시에 �
 
 ***
 
-# baseball API 아키텍쳐 구조
+# baseball API 아키텍쳐 구조, 디렉터리 구조
 ~~~~
 ┌──────────┐
 │  Python  │
@@ -37,6 +37,67 @@ batch프로그램은 서버에 service로 등록되어 매일 오전 10시에 �
 │    API   │  │ 예측 결과  │
 │ 엔드포인트 │  │ (OpenAI)   │
 └──────────┘  └───────────┘
+~~~~
+~~~~
+├── src/main/java
+│   ├── com.game.baseball.api      * 프로젝트의 주요 패키지
+│   │    ├── config                * 설정 관련 패키지
+│   │    │   ├── BatchConfig.java     - 배치 작업 설정 클래스
+│   │    │   ├── ExternalConfig.java  - 외부 설정 클래스
+│   │    │   ├── ExternalConfigImpl.java - 외부 설정 구현 클래스
+│   │    │   └── FilePathsUtil.java    - 파일 경로 유틸리티 클래스
+│   │    │
+│   │    ├── controller            * 컨트롤러 클래스 패키지
+│   │    │   └── BaseBallController.java - 메인 컨트롤러 클래스
+│   │    │
+│   │    ├── dao                   * 데이터 접근 객체 패키지
+│   │    │   ├── BaseBallDao.java     - DAO 인터페이스
+│   │    │   └── BaseBallDaoImpl.java  - DAO 구현 클래스
+│   │    │
+│   │    ├── jsonFileManager       * JSON 파일 관리 패키지
+│   │    │   ├── readManager          - JSON 읽기 관리 클래스
+│   │    │   │   ├── readJSON.java       - JSON 읽기 기능
+│   │    │   │   └── readJSONImpl.java   - JSON 읽기 구현 클래스
+│   │    │   └── getDay.java         - 날짜 가져오기 기능
+│   │    │
+│   │    ├── mapper                * 매퍼 패키지
+│   │    │   ├── BaseBallMapper.java   - 베이스볼 매퍼 인터페이스
+│   │    │   └── BaseBallMapper.java   - 베이스볼 매퍼 클래스
+│   │    │
+│   │    ├── runPy                 * Python 스크립트 실행 패키지
+│   │    │   ├── runPyfile.java      - Python 파일 실행 클래스
+│   │    │   └── runPyfileImpl.java  - Python 파일 실행 구현 클래스
+│   │    │
+│   │    └── service               * 서비스 클래스 패키지
+│   │        ├── CombinedTasklet.java   - 조합된 태스크릿 클래스
+│   │        ├── GptPyRunnerImpl.java   - GPT Python 러너 구현 클래스
+│   │        ├── PyRunner.java          - Python 러너 인터페이스
+│   │        ├── ResultPyRunnerImpl.java- 결과 Python 러너 구현 클래스
+│   │        ├── SchedulePyRunnerImpl.java - 스케줄 Python 러너 구현 클래스
+│   │        └── BaseballApiApplication.java - 메인 애플리케이션 클래스
+│   │
+├── src/main/resources
+│   ├── mappers                   * 매퍼 XML 설정 파일
+│   │    └── baseball.xml            - 베이스볼 매퍼 XML 파일
+│   │
+│   ├── py                        * Python 관련 파일 폴더
+│   │    ├── json                    - JSON 데이터 폴더
+│   │    │    ├── todaysGames
+│   │    │    │    ├── gameanalylis.json      - 경기 예상 결과 JSON
+│   │    │    │    ├── yyyyMMddKBOresult.json - 특정 날짜 KBO 결과 JSON
+│   │    │    │    ├── yyyyMMddMLBgames.json  - 특정 날짜 MLB 경기 JSON
+│   │    │    │    ├── yyyyMMddKBOgames.json  - 특정 날짜 KBO 경기 JSON
+│   │    │    │    └── yyyyMMddMLBresult.json - 특정 날짜 MLB 결과 JSON
+│   │    │
+│   │    ├── getBaseBallRating.py   - 베이스볼 등급 가져오기 Python 스크립트
+│   │    ├── getCurKBOrst.py        - 현재 KBO 순위 가져오기 Python 스크립트
+│   │    ├── getCurMLBrst.py        - 현재 MLB 순위 가져오기 Python 스크립트
+│   │    ├── getTodayKBOgame.py     - 오늘의 KBO 경기 가져오기 Python 스크립트
+│   │    └── getTodayMLBgame.py     - 오늘의 MLB 경기 가져오기 Python 스크립트
+│   │
+│   └── application.yml          * 애플리케이션 설정 파일
+│
+
 ~~~~
 ## 상세 설명
 
