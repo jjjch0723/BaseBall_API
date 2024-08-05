@@ -8,7 +8,7 @@ batch프로그램은 서버에 service로 등록되어 매일 오전 10시에 �
 
 ***
 
-# baseball API 아키텍쳐 구조, 디렉터리 구조
+# baseball API 아키텍쳐 구조
 ~~~~
 ┌──────────┐
 │  Python  │
@@ -38,6 +38,10 @@ batch프로그램은 서버에 service로 등록되어 매일 오전 10시에 �
 │ 엔드포인트 │  │ (OpenAI)   │
 └──────────┘  └───────────┘
 ~~~~
+
+***
+
+# Baseball Api 프로젝트 구조
 ~~~~
 ├── src/main/java
 │   ├── com.game.baseball.api      * 프로젝트의 주요 패키지
