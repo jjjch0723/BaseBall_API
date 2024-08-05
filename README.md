@@ -9,7 +9,7 @@ batch프로그램은 서버에 service로 등록되어 매일 오전 10시에 �
 ***
 
 # baseball API 아키텍쳐 구조
-```plaintext
+~~~~
 ┌──────────┐
 │  Python  │
 │ 스크립트 │
@@ -37,7 +37,7 @@ batch프로그램은 서버에 service로 등록되어 매일 오전 10시에 �
 │    API   │  │ 예측 결과  │
 │ 엔드포인트 │  │ (OpenAI)   │
 └──────────┘  └───────────┘
-```plaintext
+~~~~
 상세 설명
 Python 스크립트
 KBO와 MLB의 경기 데이터를 수집하여 JSON 파일로 저장합니다.
