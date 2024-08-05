@@ -9,7 +9,7 @@ batch프로그램은 서버에 service로 등록되어 매일 오전 10시에 �
 ***
 
 # baseball API 아키텍쳐 구조
-
+```plaintext
 ┌──────────┐
 │  Python  │
 │ 스크립트 │
@@ -37,8 +37,23 @@ batch프로그램은 서버에 service로 등록되어 매일 오전 10시에 �
 │    API   │  │ 예측 결과  │
 │ 엔드포인트 │  │ (OpenAI)   │
 └──────────┘  └───────────┘
-
-
+상세 설명
+Python 스크립트
+KBO와 MLB의 경기 데이터를 수집하여 JSON 파일로 저장합니다.
+KBO 데이터는 Statiz에서, MLB 데이터는 MLB-StatsAPI 라이브러리를 사용합니다.
+Java 프로그램
+매일 오전 10시에 스케줄링된 배치 프로그램을 통해 JSON 파일을 파싱하고, 데이터를 PostgreSQL 데이터베이스에 마이그레이션합니다.
+최신 경기 일정, 경기 결과, 경기 예측 결과를 임시 테이블에 저장합니다.
+AWS EC2
+API 서버와 PostgreSQL 데이터베이스를 호스팅합니다.
+API 엔드포인트를 통해 최신 경기 일정과 결과를 제공합니다.
+예측 결과 처리
+Python 스크립트를 사용하여 OpenAI API를 통해 경기 결과를 예측하고 JSON 파일로 저장합니다.
+Java 프로그램이 이 JSON 파일을 파싱하여 데이터베이스에 저장합니다.
+포트 정보
+Java API: 8080 포트 사용
+PostgreSQL: 5432 포트 사용
+plaintext```
 ***
 
 # baseball API 설명 및 사용법
