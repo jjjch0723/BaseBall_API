@@ -37,6 +37,7 @@ batch프로그램은 서버에 service로 등록되어 매일 오전 10시에 �
 │    API   │  │ 예측 결과  │
 │ 엔드포인트 │  │ (OpenAI)   │
 └──────────┘  └───────────┘
+```plaintext
 상세 설명
 Python 스크립트
 KBO와 MLB의 경기 데이터를 수집하여 JSON 파일로 저장합니다.
@@ -53,7 +54,7 @@ Java 프로그램이 이 JSON 파일을 파싱하여 데이터베이스에 저�
 포트 정보
 Java API: 8080 포트 사용
 PostgreSQL: 5432 포트 사용
-plaintext```
+
 ***
 
 # baseball API 설명 및 사용법
