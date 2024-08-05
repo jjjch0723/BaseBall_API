@@ -73,14 +73,14 @@ batch프로그램은 서버에 service로 등록되어 매일 오전 10시에 �
 
 # baseball API 설명 및 사용법
 
-* http://52.78.209.102:8080/api/v1/schedule/process
+* http://13.125.238.85:8080/api/v1/schedule/process
   * POST요청시 데이터베이스에서 임시테이블에 있는 다음날 경기 일정을 가져옵니다.
 ![예시데이터](https://github.com/user-attachments/assets/16042bb5-2554-43f4-8c92-32374ae09ec8)
   * KBO의 경우 매주 월요일이 휴일이며, 경기가 없을경우 "경기 없음"을 반환합니다.
   * 팀코드의 경우 아래의 표를 참고해주세요.
   * **현재 우천취소시 몇회에 마무리가 되었는지 기록은 없습니다.**
 
-* http://52.78.209.102:8080/api/v1/results/process
+* http://13.125.238.85:8080/api/v1/results/process
   * POST요청시 데이터베이스에서 임시테이블에 있는 어제 경기 기록을 가져옵니다.
 ![results예시](https://github.com/user-attachments/assets/800472b1-a8e4-4c0e-80ce-880229c13d59)
   * 팀코드의 경우 아래의 표를 참고해주세요.
