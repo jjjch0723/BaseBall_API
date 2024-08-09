@@ -8,6 +8,15 @@ batch프로그램은 서버에 service로 등록되어 매일 오전 10시에 �
 
 ***
 
+# 참고 사이트 및 사용 api
+|이름|설명|api명|URL|version|
+|---|---|---|---|---|
+|스탯티즈|KBO의 데이터 사이트|X|[(https://statiz.sporki.com/)]|X|
+|MLB-StatsAPI|1871년부터 현재 시즌까지의 모든 데이터를 제공|MLB-StatsAPI|[(https://pypi.org/project/MLB-StatsAPI/)]|1.7.2|
+|OpenAI|게임 결과 예상을 위한 GPT-3.5-turbo를 위해 사용|opneai|[(https://pypi.org/project/openai/)]|0.28.0|
+|BeautifulSoup|스탯티즈에서 원하는 데이터를 크롤링 하기 위하여 사용|bs4|[(https://pypi.org/project/beautifulsoup4/)]|0.0.2|
+***
+
 # baseball API 아키텍쳐 구조
 ~~~~
 ┌──────────┐
@@ -198,14 +207,21 @@ batch프로그램은 서버에 service로 등록되어 매일 오전 10시에 �
 |현대 유니콘스|4004|
 
 ***
+## 느낀점
+꽤 많은 시간을 데이터 마이그레이션에 투자하였으나 생각보다 데이터의 일관성을 유지하는게 힘들었다. 
+예를 들면 kbo와 mlb의 선수의 포지션이 다르거나, mlb선수의 경우 middle name 때문에 middle name을 last name과 합치는 상황, 경기고유코드의 로직설계를 잘못하여 경기고유코드로 검색시 데이터가 나오지 않는 상황 등등..
+내가 조금 더 db설계를 정규화하고 레벨을 조금 더 세심하게 나누었다면 검색도 편하고, 업데이트도 편했을 것이다.
+그리고 테이블의 컬럼도 조금 아쉬웠다.
+실제로 한 테이블에 많은 데이터가 있다보니 aws의 무료서버만으로는 부하를 버티지 못해 db가 계속 뻗었고, 그때문에 2만건 가량의 데이터를 삭제 하였으나, 학생레벨에서 힘들게 모은 데이터를 삭제하는건 꽤 가슴 아팠다.
+그래서 삭제 할 데이터를 다른 테이블 (예를 들면 tbl_delrslt_ct01)에 코드 형태로 저장을 해두었다면, 혹은 (예를 들면 tbl_delrslt_nt01)이라는 테이블에 삭제할 데이터를 모아뒀다면 어땠을까 한다.
 
-# 참고 사이트 및 사용 api
-|이름|설명|api명|URL|version|
-|---|---|---|---|---|
-|스탯티즈|KBO의 데이터 사이트|X|[(https://statiz.sporki.com/)]|X|
-|MLB-StatsAPI|1871년부터 현재 시즌까지의 모든 데이터를 제공|MLB-StatsAPI|[(https://pypi.org/project/MLB-StatsAPI/)]|1.7.2|
-|OpenAI|게임 결과 예상을 위한 GPT-3.5-turbo를 위해 사용|opneai|[(https://pypi.org/project/openai/)]|0.28.0|
-|BeautifulSoup|스탯티즈에서 원하는 데이터를 크롤링 하기 위하여 사용|bs4|[(https://pypi.org/project/beautifulsoup4/)]|0.0.2|
+RESTful api부분에 있어서는 처음 설계 해보는 api였기때문에 모든게 서툴렀다.
+프로젝트 내부에서 서비스 되긴 하지만 다른프로젝트에서도 사용 할 수 있도록 엔드포인트를 조금 더 세밀하게 나누어두는게 나았을것같다.
+예를 들면 선수검색, 팀의 로스터 검색, 팀경기 결과 검색 등등으로
+
+aws의 부분도 역시 처음 서버를 직접 생성하다보니, 유저의 권한, 파일의 접근권한, 로그 작성권한, 파이썬 가상환경 등등 많은 어려움이 있었다.
+
+해결한 방법은 버그리포트 보고서확인을 해보시길 바란다
 
 ***
 ## 보완점
