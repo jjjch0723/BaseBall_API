@@ -133,13 +133,62 @@
 
 ~~~~
 
-## 2.3 임의의 항목 2.3
+## 2.3 테이블 네이밍 룰
+- **tbl**: 모든 테이블 이름은 `tbl`로 시작합니다.
+- **주제**: 테이블이 다루는 주요 주제에 따라 명명됩니다. 예: `kbo`, `mlb`, `unt`(유니티), `board`(게시판) 등.
+- **세부주제**: 주제에 대한 세부 내용을 나타냅니다. 예: `bat`(타자), `pit`(투수), `player`(선수), `schedule`(일정) 등.
+- **버전**: 테이블 버전을 나타내는 `nt`, `mt`, `ct` 등의 접미사를 사용합니다.
+  - `nt`: 일반적인 데이터 테이블 (예: `tbl_kbopit_nt01`)
+  - `mt`: 마스터 데이터 테이블 (예: `tbl_team_mt01`)
+  - `ct`: 코드 또는 시퀀스 테이블 (예: `tbl_unt_item_type_ct01`)
+  - `ttp`: 임시 테이블 (예: `tbl_kboschedule_ttp`)
 
-**내용을 여기에 추가하세요**
+## 2. 주제 및 세부주제 네이밍 규칙
 
-## 2.4 임의의 항목 2.4
+### 2.1 KBO 및 MLB 관련 테이블
+- **주제**: `kbo`, `mlb`
+- **세부주제**: 
+  - `bat`: 타자 스탯 (예: `tbl_kbobat_nt02`)
+  - `pit`: 투수 스탯 (예: `tbl_kbopit_nt01`)
+  - `player`: 선수 목록 (예: `tbl_kboplayer_nt01`)
+  - `schedule`: 경기 일정 (예: `tbl_kboschedule_ttp`)
+  - `res`: 경기 결과 (예: `tbl_kbores_ttp`)
+  - `rslt`: 경기 최종 결과 (예: `tbl_kborslt_nt03`)
 
-**내용을 여기에 추가하세요**
+### 2.2 유니티 관련 테이블
+- **주제**: `unt`
+- **세부주제**: 
+  - `dstats`: 육성 캐릭터 스탯 (예: `tbl_unt_dstats_nt01`)
+  - `item`: 아이템 정보 (예: `tbl_unt_item_mt01`)
+  - `quest`: 퀘스트 정보 (예: `tbl_unt_quest_nt01`)
+  - `inven`: 유저 인벤토리 (예: `tbl_unt_inven_nt01`)
+  - `gptlog`: GPT 대화 로그 (예: `tbl_unt_gptlog_nt01`)
+
+### 2.3 웹 및 API 관련 테이블
+- **주제**: `board`, `user`
+- **세부주제**: 
+  - `board`: 게시판 정보 (예: `tbl_board_nt01`)
+  - `comment`: 게시글 댓글 (예: `tbl_comment_nt01`)
+  - `userinfo`: 유저 정보 (예: `tbl_user_nt_01`)
+
+## 3. 버전 네이밍 규칙
+
+- **`nt` (Normal Table)**: 일반 테이블, 주로 데이터를 저장하고 관리하는 데 사용됩니다. 예: `tbl_kbopit_nt01`
+- **`mt` (Master Table)**: 마스터 데이터 관리 테이블, 변경이 적고 참조되는 기본 데이터를 저장합니다. 예: `tbl_team_mt01`
+- **`ct` (Code Table)**: 코드 또는 시퀀스 관리 테이블, 시스템에서 사용하는 고정된 코드 값을 관리합니다. 예: `tbl_unt_item_type_ct01`
+- **`ttp` (Temporary Table)**: 임시 데이터 저장을 위한 테이블로, 배치 작업 중이나 일시적으로 데이터가 필요한 경우 사용합니다. 예: `tbl_kboschedule_ttp`
+
+## 4. 추가 규칙
+
+- **모든 테이블 이름은 소문자**로 작성됩니다.
+- **단어는 밑줄(`_`)로 구분**되며, 약어는 대문자로 작성하지 않습니다.
+
+
+## 2.4 데이터베이스 및 테이블 목록
+[데이터베이스 설계서 - 데이터 베이스 목록.pdf](https://github.com/user-attachments/files/16557746/-.pdf)
+[데이터베이스 설계서 - 테이블 목록.pdf](https://github.com/user-attachments/files/16557748/-.pdf)
+
+
 
 ## 2.5 임의의 항목 2.5
 
