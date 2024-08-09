@@ -210,6 +210,9 @@ batch프로그램은 서버에 service로 등록되어 매일 오전 10시에 �
 ***
 ## 보완점
 * ~~Rest API로 변경 예정.~~
+* matchcode 생성 로직 변경 예정.(현재 yyyyMMdd + winteamcode + loseteamcode 로 생성이 되고 있으나 matchcode가 실제 데이터와 꼬이는 상황이 발생, hometeam + awayteam으로 하게되면 일관성이 생길것같음.)
 * KBO 우천취소 시 몇회에서 끝났고, 끝날 당시의 각 팀의 점수를 표시.
 * 데이터베이스의 마스터 테이블인 팀 테이블의 MLB팀의 세부화.
   * 세부화 후 서,중,동 부로 엔드포인트를 나누어 경기기록이 모두 나올 수 있도록 함.
+* /search/results/teamcode 엔드포인트로 팀코드 요청시 팀의 경기 기록이 json형태로 나오도록 함.
+* /search/player/teamcode 엔드포인트로 팀코드 요청시 팀 로스터가 json형태로 나오도록 함.(포지션을 입력하는 방법도 생각중)
