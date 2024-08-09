@@ -134,65 +134,108 @@
 ~~~~
 
 ## 2.3 테이블 네이밍 룰
-- **tbl**: 모든 테이블 이름은 `tbl`로 시작합니다.
-- **주제**: 테이블이 다루는 주요 주제에 따라 명명됩니다. 예: `kbo`, `mlb`, `unt`(유니티), `board`(게시판) 등.
-- **세부주제**: 주제에 대한 세부 내용을 나타냅니다. 예: `bat`(타자), `pit`(투수), `player`(선수), `schedule`(일정) 등.
-- **버전**: 테이블 버전을 나타내는 `nt`, `mt`, `ct` 등의 접미사를 사용합니다.
-  - `nt`: 일반적인 데이터 테이블 (예: `tbl_kbopit_nt01`)
-  - `mt`: 마스터 데이터 테이블 (예: `tbl_team_mt01`)
-  - `ct`: 코드 또는 시퀀스 테이블 (예: `tbl_unt_item_type_ct01`)
-  - `ttp`: 임시 테이블 (예: `tbl_kboschedule_ttp`)
+
+| 항목           | 설명                                                                                          | 예시                      |
+|----------------|-----------------------------------------------------------------------------------------------|---------------------------|
+| **tbl**        | 모든 테이블 이름은 `tbl`로 시작합니다.                                                         | `tbl_kbopit_nt01`          |
+| **주제**       | 테이블이 다루는 주요 주제에 따라 명명됩니다.                                                   | `kbo`, `mlb`, `unt`, `board` |
+| **세부주제**   | 주제에 대한 세부 내용을 나타냅니다.                                                            | `bat`, `pit`, `player`, `schedule` |
+| **버전**       | 테이블 버전을 나타내는 접미사 (`nt`, `mt`, `ct`, `ttp`)를 사용합니다.                         | `tbl_kbopit_nt01`, `tbl_team_mt01`, `tbl_unt_item_type_ct01`, `tbl_kboschedule_ttp` |
 
 ## 2. 주제 및 세부주제 네이밍 규칙
 
-### 2.1 KBO 및 MLB 관련 테이블
-- **주제**: `kbo`, `mlb`
-- **세부주제**: 
-  - `bat`: 타자 스탯 (예: `tbl_kbobat_nt02`)
-  - `pit`: 투수 스탯 (예: `tbl_kbopit_nt01`)
-  - `player`: 선수 목록 (예: `tbl_kboplayer_nt01`)
-  - `schedule`: 경기 일정 (예: `tbl_kboschedule_ttp`)
-  - `res`: 경기 결과 (예: `tbl_kbores_ttp`)
-  - `rslt`: 경기 최종 결과 (예: `tbl_kborslt_nt03`)
-
-### 2.2 유니티 관련 테이블
-- **주제**: `unt`
-- **세부주제**: 
-  - `dstats`: 육성 캐릭터 스탯 (예: `tbl_unt_dstats_nt01`)
-  - `item`: 아이템 정보 (예: `tbl_unt_item_mt01`)
-  - `quest`: 퀘스트 정보 (예: `tbl_unt_quest_nt01`)
-  - `inven`: 유저 인벤토리 (예: `tbl_unt_inven_nt01`)
-  - `gptlog`: GPT 대화 로그 (예: `tbl_unt_gptlog_nt01`)
-
-### 2.3 웹 및 API 관련 테이블
-- **주제**: `board`, `user`
-- **세부주제**: 
-  - `board`: 게시판 정보 (예: `tbl_board_nt01`)
-  - `comment`: 게시글 댓글 (예: `tbl_comment_nt01`)
-  - `userinfo`: 유저 정보 (예: `tbl_user_nt_01`)
+| 주제   | 세부주제   | 설명                               | 예시                        |
+|--------|------------|------------------------------------|-----------------------------|
+| `kbo`, `mlb` | `bat`    | 타자 스탯                         | `tbl_kbobat_nt02`            |
+|        | `pit`    | 투수 스탯                           | `tbl_kbopit_nt01`            |
+|        | `player` | 선수 목록                           | `tbl_kboplayer_nt01`         |
+|        | `schedule` | 경기 일정                        | `tbl_kboschedule_ttp`        |
+|        | `res`    | 경기 결과                           | `tbl_kbores_ttp`             |
+|        | `rslt`   | 경기 최종 결과                      | `tbl_kborslt_nt03`           |
+| `unt`  | `dstats` | 육성 캐릭터 스탯                    | `tbl_unt_dstats_nt01`        |
+|        | `item`   | 아이템 정보                         | `tbl_unt_item_mt01`          |
+|        | `quest`  | 퀘스트 정보                         | `tbl_unt_quest_nt01`         |
+|        | `inven`  | 유저 인벤토리                       | `tbl_unt_inven_nt01`         |
+|        | `gptlog` | GPT 대화 로그                       | `tbl_unt_gptlog_nt01`        |
+| `board`, `user` | `board`  | 게시판 정보                     | `tbl_board_nt01`             |
+|        | `comment` | 게시글 댓글                        | `tbl_comment_nt01`           |
+|        | `userinfo` | 유저 정보                          | `tbl_user_nt_01`             |
 
 ## 3. 버전 네이밍 규칙
 
-- **`nt` (Normal Table)**: 일반 테이블, 주로 데이터를 저장하고 관리하는 데 사용됩니다. 예: `tbl_kbopit_nt01`
-- **`mt` (Master Table)**: 마스터 데이터 관리 테이블, 변경이 적고 참조되는 기본 데이터를 저장합니다. 예: `tbl_team_mt01`
-- **`ct` (Code Table)**: 코드 또는 시퀀스 관리 테이블, 시스템에서 사용하는 고정된 코드 값을 관리합니다. 예: `tbl_unt_item_type_ct01`
-- **`ttp` (Temporary Table)**: 임시 데이터 저장을 위한 테이블로, 배치 작업 중이나 일시적으로 데이터가 필요한 경우 사용합니다. 예: `tbl_kboschedule_ttp`
+| 버전 접미사 | 설명                                                              | 예시                        |
+|-------------|-------------------------------------------------------------------|-----------------------------|
+| `nt`        | 일반 테이블, 주로 데이터를 저장하고 관리하는 데 사용됨             | `tbl_kbopit_nt01`           |
+| `mt`        | 마스터 데이터 관리 테이블, 변경이 적고 참조되는 기본 데이터를 저장 | `tbl_team_mt01`             |
+| `ct`        | 코드 또는 시퀀스 관리 테이블, 고정된 코드 값을 관리함              | `tbl_unt_item_type_ct01`    |
+| `ttp`       | 임시 데이터 저장을 위한 테이블                                     | `tbl_kboschedule_ttp`       |
 
 ## 4. 추가 규칙
 
-- **모든 테이블 이름은 소문자**로 작성됩니다.
-- **단어는 밑줄(`_`)로 구분**되며, 약어는 대문자로 작성하지 않습니다.
+| 규칙                      | 설명                                                                                 |
+|---------------------------|--------------------------------------------------------------------------------------|
+| **소문자 사용**            | 모든 테이블 이름은 소문자로 작성됩니다.                                                |
+| **밑줄(`_`)로 단어 구분**  | 단어는 밑줄로 구분하며, 약어는 대문자로 작성하지 않습니다.                            |
 
 
 ## 2.4 데이터베이스 및 테이블 목록
-[데이터베이스 설계서 - 데이터 베이스 목록.pdf](https://github.com/user-attachments/files/16557746/-.pdf)
-[데이터베이스 설계서 - 테이블 목록.pdf](https://github.com/user-attachments/files/16557748/-.pdf)
+### 데이터베이스 목록
+
+| ID       | 명칭             | 보유 스키마  |
+|----------|------------------|--------------|
+| baseball | 야구, 미니게임    | baseball     |
+
+### 테이블 목록
+
+| No  | OWNER ID | 스키마명 | 테이블명                   | 한글테이블명                  | 현재적재건수 | 현재크기   |
+|-----|----------|----------|----------------------------|-------------------------------|--------------|------------|
+| 1   | baseball | baseball | batch_job_execution         | 배치 작업 실행                | 2            | 32 kB      |
+| 2   | baseball | baseball | batch_job_execution_context | 배치 작업 실행 컨텍스트       | 2            | 32 kB      |
+| 3   | baseball | baseball | batch_job_execution_params  | 배치 작업 실행 매개변수       | 2            | 8192 bytes |
+| 4   | baseball | baseball | batch_job_instance          | 배치 작업 인스턴스            | 2            | 40 kB      |
+| 5   | baseball | baseball | batch_step_execution        | 배치 단계 실행                | 2            | 32 kB      |
+| 6   | baseball | baseball | batch_step_execution_context| 배치 단계 실행 컨텍스트       | 2            | 32 kB      |
+| 7   | baseball | baseball | tbl_board_nt01              | 웹 메인 게시판                | 22           | 32 kB      |
+| 8   | baseball | baseball | tbl_comment_nt01            | 웹 게시글 댓글                | 0            | 8192 bytes |
+| 9   | baseball | baseball | tbl_gptexepect_nt01         | 경기예상 결과                | 465          | 176 kB     |
+| 10  | baseball | baseball | tbl_gptexepect_ttp          | 경기예상 결과 임시테이블      | 0            | 16 kB      |
+| 11  | baseball | baseball | tbl_kbobat_nt02             | KBO 시즌별 팀 타자 스탯       | 213          | 72 kB      |
+| 12  | baseball | baseball | tbl_kbopit_nt01             | KBO 시즌별 팀 타자 스탯       | 213          | 72 kB      |
+| 13  | baseball | baseball | tbl_kboplayer_nt01          | KBO 2023선수목록              | 270          | 72 kB      |
+| 14  | baseball | baseball | tbl_kbores_ttp              | KBO 결과 임시테이블           | 0            | 32 kB      |
+| 15  | baseball | baseball | tbl_kborslt_nt03            | KBO 결과 테이블               | 23093        | 2336 kB    |
+| 16  | baseball | baseball | tbl_kboschedule_ttp         | KBO 일정 임시테이블           | 0            | 16 kB      |
+| 17  | baseball | baseball | tbl_league_ct01             | 리그 코드 테이블              | 3            | 32 kB      |
+| 18  | baseball | baseball | tbl_mlbbat_nt02             | MLB 시즌별 팀 타자 스탯       | 720          | 144 kB     |
+| 19  | baseball | baseball | tbl_mlbpit_nt01             | MLB 시즌별 팀 타자 스탯       | 720          | 136 kB     |
+| 20  | baseball | baseball | tbl_mlbplayer_nt01          | MLB 2023선수목록              | 779          | 152 kB     |
+| 21  | baseball | baseball | tbl_mlbres_ttp              | MLB 결과 임시테이블           | 0            | 32 kB      |
+| 22  | baseball | baseball | tbl_mlbrslt_nt03            | MLB 결과 테이블               | 52638        | 5160 kB    |
+| 23  | baseball | baseball | tbl_mlbschedule_ttp         | MLB 일정 임시테이블           | 0            | 16 kB      |
+| 24  | baseball | baseball | tbl_team_mt01               | 팀 정보 마스터 테이블         | 41           | 32 kB      |
+| 25  | baseball | baseball | tbl_unt_dstats_nt01         | 유니티 육성캐릭터 스탯        | 10           | 24 kB      |
+| 26  | baseball | baseball | tbl_unt_gptlog_nt01         | 유니티 대화 로그             | 120          | 184 kB     |
+| 27  | baseball | baseball | tbl_unt_inven_nt01          | 유니티 인벤토리              | 77           | 24 kB      |
+| 28  | baseball | baseball | tbl_unt_item_mt01           | 유니티 아이템 마스터테이블    | 54           | 40 kB      |
+| 29  | baseball | baseball | tbl_unt_item_seq_ct01       | 유니티 아이템의 시퀀스 테이블 | 54           | 24 kB      |
+| 30  | baseball | baseball | tbl_unt_item_type_nt01      | 유니티 아이템 타입 테이블     | 14           | 24 kB      |
+| 31  | baseball | baseball | tbl_unt_mob_nt01            | 유니티 몬스터 테이블          | 3            | 32 kB      |
+| 32  | baseball | baseball | tbl_unt_quest_nt01          | 유니티 퀘스트 테이블          | 10           | 32 kB      |
+| 33  | baseball | baseball | tbl_unt_recipe_nt01         | 유니티 레시피 테이블          | 21           | 24 kB      |
+| 34  | baseball | baseball | tbl_unt_tododate_nt02       | 유니티 일정번호 테이블        | 8            | 24 kB      |
+| 35  | baseball | baseball | tbl_unt_todolist_nt01       | 유니티 일정정보 테이블        | 9            | 24 kB      |
+| 36  | baseball | baseball | tbl_unt_userinfo_mt01       | 유니티 유저정보 마스터테이블  | 9            | 24 kB      |
+| 37  | baseball | baseball | tbl_user_nt_01              | 웹 유저 정보 테이블           | 44           | 16 kB      |
+| 38  | baseball | baseball | tbl_user_nt_02              | 웹 유저 선호팀 테이블         | 37           | 16 kB      |
 
 
 
-## 2.5 임의의 항목 2.5
 
-**내용을 여기에 추가하세요**
+## 2.5 테이블 설계서
+* 내용이 많아 pdf파일로 대체 합니다
+[데이터베이스 설계서 - 웹, API테이블 설계서.pdf](https://github.com/user-attachments/files/16557805/-.API.pdf)<br>
+[데이터베이스 설계서 - 유니티 테이블설계서.pdf](https://github.com/user-attachments/files/16557820/-.pdf)<br>
+[데이터베이스 설계서 - 배치, 임시 테이블설계서.pdf](https://github.com/user-attachments/files/16557821/-.pdf)<br>
 
 ---
 
