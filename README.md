@@ -237,7 +237,7 @@
 
 
 ## 2.5 테이블 설계서
-* 내용이 많아 pdf파일로 대체 합니다
+* 내용이 많아 pdf파일로 대체 합니다<br>
 [데이터베이스 설계서 - 웹, API테이블 설계서.pdf](https://github.com/user-attachments/files/16557805/-.API.pdf)<br>
 [데이터베이스 설계서 - 유니티 테이블설계서.pdf](https://github.com/user-attachments/files/16557820/-.pdf)<br>
 [데이터베이스 설계서 - 배치, 임시 테이블설계서.pdf](https://github.com/user-attachments/files/16557821/-.pdf)<br>
