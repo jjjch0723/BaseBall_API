@@ -1,9 +1,8 @@
 import json
 import openai
-import mysql.connector
+import psycopg2
 import time
 import os
-import psycopg2
 
 openai.api_key = ''
 
@@ -57,13 +56,13 @@ def getKBOData():
             port='5432',
             user='',
             password='',
-            database='postgres'
+            database=''
         )
 
     cursor = conn.cursor()
 
     kbosql = '''
-    select ttm1.teamname_kr, ttm2.teamname_kr, tkt.game_date
+    select ttm2.teamname_kr, ttm1.teamname_kr, tkt.game_date
     from tbl_kboschedule_ttp tkt 
     inner join tbl_team_mt01 ttm1 on tkt.team1 = ttm1.team_code 
     inner join tbl_team_mt01 ttm2 on tkt.team2 = ttm2.team_code 
@@ -95,13 +94,13 @@ def getMLBData():
             port='5432',
             user='',
             password='',
-            database='postgres'
+            database=''
         )
 
     cursor = conn.cursor()
 
     mlbsql = '''
-    select ttm1.teamname_kr, ttm2.teamname_kr, tkt.game_date
+    select ttm2.teamname_kr, ttm1.teamname_kr, tkt.game_date
     from tbl_mlbschedule_ttp tkt 
     inner join tbl_team_mt01 ttm1 on tkt.team1 = ttm1.team_code 
     inner join tbl_team_mt01 ttm2 on tkt.team2 = ttm2.team_code 
@@ -156,13 +155,18 @@ def parse_analysis(response, team1_name, team2_name):
                     # Set a default value for game_analysis if it's missing
                     parsed[key] = "No detailed analysis provided."
                 else:
-                    raise ValueError(f"Missing key in response: {key}")
+                    # Set default values for missing scores or win rates
+                    if key in ["team1_score", "team2_score"]:
+                        parsed[key] = "0점"  # 기본값으로 0점 설정
+                    elif key in ["team1_win_rate", "team2_win_rate"]:
+                        parsed[key] = "50%"  # 기본 승률 50% 설정
 
         return parsed
     except Exception as e:
         print(f"Error parsing response: {e}")
         print("Response content:", response)
         return None
+
 
 def store_analysis_to_file(game_analysis, filename='game_analysis.json'):
     base_dir = os.path.dirname(__file__)
@@ -256,6 +260,18 @@ def getAnalysis(getDataFunction):
         
     return games_analysis, failed_games
 
+def remove_duplicates_and_empty_analysis(games_analysis):
+    unique_games = {}
+    for game in games_analysis:
+        key = (game['TEAM1'], game['TEAM2'], game['DATE'])
+        if key not in unique_games or game['GAME_ANALYSIS']:
+            unique_games[key] = game
+    
+    # Only include games with non-empty GAME_ANALYSIS
+    filtered_games = [game for game in unique_games.values() if game['GAME_ANALYSIS']]
+
+    return filtered_games
+
 # 분석 결과 출력
 if __name__ == '__main__':
     all_analysis_results = []
@@ -279,12 +295,9 @@ if __name__ == '__main__':
 
     if all_analysis_results:
         print(json.dumps(all_analysis_results, ensure_ascii=False, indent=4))
+        # 중복 제거 및 GAME_ANALYSIS 값이 빈 값이 아닌 항목만 남기기
+        all_analysis_results = remove_duplicates_and_empty_analysis(all_analysis_results)
         # JSON 파일로 저장
         store_analysis_to_file(all_analysis_results, filename='game_analysis.json')
     else:
         print("No analysis results found.")
-
-
-
-
-# gpt한테 선수값들 다 넘겨주기. 언제하지 잉잉이이이잉이이이잉
