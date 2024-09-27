@@ -11,7 +11,7 @@ spring:
       suffix: .jsp
 
   datasource:
-    url: jdbc:postgresql:// /baseball
+    url: jdbc:postgresql:///baseball
     username: 
     password: 
     driver-class-name: org.postgresql.Driver
@@ -22,7 +22,7 @@ spring:
     jdbc:
       initialize-schema: always
     job:
-      enabled: false
+      enabled: true
   
 logging:
   level:
@@ -35,7 +35,7 @@ server:
   servlet:
     context-path: ""  # root context path로 설정
     session:
-      timeout: 1m
+      timeout: 15m
 
 mybatis:
   mapper-locations: classpath:/mappers/*.xml
