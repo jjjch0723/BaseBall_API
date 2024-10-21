@@ -1,0 +1,59 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+  application:
+    name: baseball
+    version: 1.2.1
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+
+  datasource:
+    url: jdbc:postgresql:///baseball
+    username: 
+    password: 
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: true
+  
+logging:
+  level:
+    root: info
+    com.game.baseball: debug
+  file:
+    name: /var/log/myapp/baseball.log
+
+server:
+  servlet:
+    context-path: ""  # root context path로 설정
+    session:
+      timeout: 15m
+
+mybatis:
+  mapper-locations: classpath:/mappers/*.xml
+  type-aliases-package: com.game.baseball.model
+
+file:
+  path: /home/baseball/src/main/resources/py/json/todaysGames
+
+py:
+  paths:
+    mlb:
+      schedule: /home/baseball/src/main/resources/py/getTodayMLBgame.py
+      result: /home/baseball/src/main/resources/py/getCurMLBrslt.py
+    kbo:
+      schedule: /home/baseball/src/main/resources/py/getTodayKBOgame.py
+      result: /home/baseball/src/main/resources/py/getCurKBOrslt.py
+    gpt:
+      exepect: /home/baseball/src/main/resources/py/getBaseBallRating.py
+
+schedule:
+  cron: "0 0 0 * * *"
