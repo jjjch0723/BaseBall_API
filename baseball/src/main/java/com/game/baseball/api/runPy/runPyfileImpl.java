@@ -37,28 +37,34 @@ public class runPyfileImpl implements runPyfile {
 		pyRunner(path);
 	}
 	
-    @Override
-    public void pyRunner(String path) {
-        try {
-            ProcessBuilder pb = new ProcessBuilder("/home/baseball/venv/bin/python3.12", path);
-            logger.info("Running Python script: {}", path);
-            pb.redirectErrorStream(true);
-            Process process = pb.start();
+	@Override
+	public void pyRunner(String path) {
+	    try {
+	        ProcessBuilder pb = new ProcessBuilder("/home/baseball/venv/bin/python3.12", path);
+	        logger.info("Running Python script: {}", path);
+	        
+	        Process process = pb.start();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                logger.info("Python output: {}", line);
-            }
+	        BufferedReader stdOutReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+	        BufferedReader stdErrReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
-            int exitCode = process.waitFor();
-            if (exitCode == 0) {
-                logger.info("Python script executed successfully with exit code: {}", exitCode);
-            } else {
-                logger.error("Python script execution failed with exit code: {}", exitCode);
-            }
-        } catch (Exception e) {
-            logger.error("Error running Python script: {}", path, e);
-        }
-    }
+	        String line;
+	        while ((line = stdOutReader.readLine()) != null) {
+	            logger.info("Python stdout: {}", line);
+	        }
+
+	        while ((line = stdErrReader.readLine()) != null) {
+	            logger.error("Python stderr: {}", line);
+	        }
+
+	        int exitCode = process.waitFor();
+	        if (exitCode == 0) {
+	            logger.info("Python script executed successfully with exit code: {}", exitCode);
+	        } else {
+	            logger.error("Python script execution failed with exit code: {}", exitCode);
+	        }
+	    } catch (Exception e) {
+	        logger.error("Error running Python script: {}", path, e);
+	    }
+	}
 }

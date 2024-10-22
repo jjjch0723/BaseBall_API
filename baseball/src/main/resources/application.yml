@@ -4,19 +4,22 @@ spring:
     allow-circular-references: true
   application:
     name: baseball
-    version: 1.2.1
+    version: 1.2.3
   mvc:
     view:
       prefix: /WEB-INF/views/
       suffix: .jsp
-
+  transaction:
+    default-timeout: 300
   datasource:
-    url: jdbc:postgresql:///baseball
+    url: jdbc:postgresql:///
     username: 
     password: 
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
+      max-lifetime: 1800000
+
 
   batch:
     jdbc:

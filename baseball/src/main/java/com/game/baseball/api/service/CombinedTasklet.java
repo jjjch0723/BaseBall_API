@@ -15,26 +15,53 @@ public class CombinedTasklet implements Tasklet {
     private static final Logger logger = LoggerFactory.getLogger(CombinedTasklet.class);
 
     @Autowired
-    private ResultPyRunnerImpl resultPyRunner;
-
-    @Autowired
     private SchedulePyRunnerImpl schedulePyRunner;
 
     @Autowired
+    private ResultPyRunnerImpl resultPyRunner;
+
+    @Autowired
     private GptPyRunnerImpl gptPyRunner;
+
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        logger.info("Starting schedule processing");
-        schedulePyRunner.pyRunner();
-        logger.info("Schedule processing completed");
-
-        logger.info("Starting result processing");
-        resultPyRunner.pyRunner();
-        logger.info("Result processing completed");
-
-        logger.info("Starting exepect processing");
-        gptPyRunner.pyRunner();
-        logger.info("Exepect processing completed");
+        try {
+            executeScheduleProcessing();
+            executeResultProcessing();
+            executeGptProcessing();
+        } catch (Exception e) {
+            logger.error("Error occurred during combined tasklet execution", e);
+        }
         return RepeatStatus.FINISHED;
+    }
+
+    private void executeScheduleProcessing() {
+        try {
+            logger.info("Starting schedule processing");
+            schedulePyRunner.pyRunner();
+            logger.info("Schedule processing completed");
+        } catch (Exception e) {
+            logger.error("Failed during schedule processing", e);
+        }
+    }
+
+    private void executeResultProcessing() {
+        try {
+            logger.info("Starting result processing");
+            resultPyRunner.pyRunner();
+            logger.info("Result processing completed");
+        } catch (Exception e) {
+            logger.error("Failed during result processing", e);
+        }
+    }
+
+    private void executeGptProcessing() {
+        try {
+            logger.info("Starting GPT processing");
+            gptPyRunner.pyRunner();
+            logger.info("GPT processing completed");
+        } catch (Exception e) {
+            logger.error("Failed during GPT processing", e);
+        }
     }
 }

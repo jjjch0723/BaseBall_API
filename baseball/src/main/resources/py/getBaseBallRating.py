@@ -3,8 +3,25 @@ import openai
 import psycopg2
 import time
 import os
+import concurrent.futures
+from psycopg2 import pool
+from threading import Lock
+import openai
+from openai.error import OpenAIError
+import traceback
+import sys
 
 openai.api_key = ''
+
+# Database connection pool
+db_pool = pool.SimpleConnectionPool(
+    1, 20,  # Minimum 1, maximum 20 connections
+    host='',
+    port='5432',
+    user='',
+    password='',
+    database=''
+)
 
 # team_id_map 정의
 team_id_map = {
@@ -50,88 +67,65 @@ team_id_map = {
     "텍사스 레인저스": "140"
 }
 
+# Analysis count and lock for thread-safe increment
+analysis_count = 0
+analysis_count_lock = Lock()
+
 def getKBOData():
-    conn = psycopg2.connect(
-            host='',
-            port='5432',
-            user='',
-            password='',
-            database=''
-        )
-
-    cursor = conn.cursor()
-
-    kbosql = '''
-    select ttm2.teamname_kr, ttm1.teamname_kr, tkt.game_date
-    from tbl_kboschedule_ttp tkt 
-    inner join tbl_team_mt01 ttm1 on tkt.team1 = ttm1.team_code 
-    inner join tbl_team_mt01 ttm2 on tkt.team2 = ttm2.team_code 
-    '''
-
-    cursor.execute(kbosql)
-
-    result = cursor.fetchall()
-
-    games = []
-    for game in result:
-        games.append({
-            'team1_name': game[0],
-            'team2_name': game[1],
-            'game_date': game[2]
-        })
-
-    if not games:
-        print("No games found in database query.")
-    else:
-        print(f"Found {len(games)} games in database query.")
-    
-    json_data = json.dumps(games, ensure_ascii=False, indent=4)
-    return json_data
+    try:
+        conn = db_pool.getconn()
+        cursor = conn.cursor()
+        kbosql = '''
+        select ttm2.teamname_kr, ttm1.teamname_kr, tkt.game_date
+        from tbl_kboschedule_ttp tkt 
+        inner join tbl_team_mt01 ttm1 on tkt.team1 = ttm1.team_code 
+        inner join tbl_team_mt01 ttm2 on tkt.team2 = ttm2.team_code 
+        '''
+        cursor.execute(kbosql)
+        result = cursor.fetchall()
+        
+        # 읽어온 데이터 출력
+        for row in result:
+            print(f"KBO Game: Team1={row[0]}, Team2={row[1]}, Game Date={row[2]}")
+        
+        return json.dumps([{'team1_name': row[0], 'team2_name': row[1], 'game_date': row[2]} for row in result], ensure_ascii=False, indent=4)
+    except Exception as e:
+        print(f"Error in getKBOData: {e}")
+        traceback.print_exc()
+        sys.exit(1)
+    finally:
+        db_pool.putconn(conn)
 
 def getMLBData():
-    conn = psycopg2.connect(
-            host='',
-            port='5432',
-            user='',
-            password='',
-            database=''
-        )
-
-    cursor = conn.cursor()
-
-    mlbsql = '''
-    select ttm2.teamname_kr, ttm1.teamname_kr, tkt.game_date
-    from tbl_mlbschedule_ttp tkt 
-    inner join tbl_team_mt01 ttm1 on tkt.team1 = ttm1.team_code 
-    inner join tbl_team_mt01 ttm2 on tkt.team2 = ttm2.team_code 
-    '''
-
-    cursor.execute(mlbsql)
-
-    result = cursor.fetchall()
-
-    games = []
-    for game in result:
-        games.append({
-            'team1_name': game[0],
-            'team2_name': game[1],
-            'game_date': game[2]
-        })
-
-    if not games:
-        print("No games found in database query.")
-    else:
-        print(f"Found {len(games)} games in database query.")
-    
-    json_data = json.dumps(games, ensure_ascii=False, indent=4)
-    return json_data
+    try:
+        conn = db_pool.getconn()
+        cursor = conn.cursor()
+        mlbsql = '''
+        select ttm2.teamname_kr, ttm1.teamname_kr, tkt.game_date
+        from tbl_mlbschedule_ttp tkt 
+        inner join tbl_team_mt01 ttm1 on tkt.team1 = ttm1.team_code 
+        inner join tbl_team_mt01 ttm2 on tkt.team2 = ttm2.team_code 
+        '''
+        cursor.execute(mlbsql)
+        result = cursor.fetchall()
+        
+        # 읽어온 데이터 출력
+        for row in result:
+            print(f"MLB Game: Team1={row[0]}, Team2={row[1]}, Game Date={row[2]}")
+        
+        return json.dumps([{'team1_name': row[0], 'team2_name': row[1], 'game_date': row[2]} for row in result], ensure_ascii=False, indent=4)
+    except Exception as e:
+        print(f"Error in getMLBData: {e}")
+        traceback.print_exc()
+        sys.exit(1)
+    finally:
+        db_pool.putconn(conn)
 
 def parse_analysis(response, team1_name, team2_name):
     try:
         parsed = {}
         lines = response.split('\n')
 
-        # Define required keys and their corresponding format in the response
         required_keys = {
             "team1_win_rate": [f"{team1_name} 승률"],
             "team2_win_rate": [f"{team2_name} 승률"],
@@ -148,51 +142,51 @@ def parse_analysis(response, team1_name, team2_name):
                         parsed[key] = value
                         break
 
-        # Check if all required keys are in the parsed dictionary
         for key in required_keys.keys():
             if key not in parsed:
                 if key == "game_analysis":
-                    # Set a default value for game_analysis if it's missing
                     parsed[key] = "No detailed analysis provided."
-                else:
-                    # Set default values for missing scores or win rates
-                    if key in ["team1_score", "team2_score"]:
-                        parsed[key] = "0점"  # 기본값으로 0점 설정
-                    elif key in ["team1_win_rate", "team2_win_rate"]:
-                        parsed[key] = "50%"  # 기본 승률 50% 설정
+                elif key in ["team1_score", "team2_score"]:
+                    parsed[key] = "0점"
+                elif key in ["team1_win_rate", "team2_win_rate"]:
+                    parsed[key] = "50%"
 
         return parsed
     except Exception as e:
         print(f"Error parsing response: {e}")
-        print("Response content:", response)
-        return None
-
+        traceback.print_exc()
+        sys.exit(1)
 
 def store_analysis_to_file(game_analysis, filename='game_analysis.json'):
-    base_dir = os.path.dirname(__file__)
-    file_path = os.path.join(base_dir, 'json', 'todaysGames', filename)
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    try:
+        base_dir = os.path.dirname(__file__)
+        file_path = os.path.join(base_dir, 'json', 'todaysGames', filename)
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
-    # JSON 파일 작성
-    with open(file_path, 'w', encoding='utf-8') as f:
-        json.dump(game_analysis, f, ensure_ascii=False, indent=4)
+        with open(file_path, 'w', encoding='utf-8') as f:
+            json.dump(game_analysis, f, ensure_ascii=False, indent=4)
 
-    # 파일 소유자 및 권한 설정
-    os.system(f'sudo chown tomcat:tomcat {file_path}')
-    os.system(f'sudo chmod 777 {file_path}')
-    
-    print(f"Analysis results stored in {file_path}")
+        os.system(f'sudo chown baseball:baseball {file_path}')
+        os.system(f'sudo chmod 777 {file_path}')
+        
+        print(f"Analysis results stored in {file_path}")
+    except Exception as e:
+        print(f"Error storing analysis to file: {e}")
+        traceback.print_exc()
+        sys.exit(1)
 
-def getAnalysis(getDataFunction):
-    games = json.loads(getDataFunction())
-    games_analysis = []
-    failed_games = []
+def analyze_game(game):
+    global analysis_count
+    team1_name = game.get('team1_name')
+    team2_name = game.get('team2_name')
+    game_date = game.get('game_date')
 
-    for game in games:
-        team1_name = game['team1_name']
-        team2_name = game['team2_name']
-        game_date = game['game_date']
+    # 데이터 검증 출력
+    if not team1_name or not team2_name or not game_date:
+        print(f"유효하지 않은 게임 데이터: Team1={team1_name}, Team2={team2_name}, Game Date={game_date}")
+        return None
 
+    try:
         prompt = (
             f"I will analyze the games based on past matches. "
             f"I don't care about players' conditions, weather, etc. "
@@ -216,88 +210,116 @@ def getAnalysis(getDataFunction):
             f"{team1_name} 과 {team2_name}의 경기분석: analysis content\n"
         )
 
-        success = False
-        while not success:
-            try:
-                response = openai.ChatCompletion.create(
-                    model="gpt-4o-mini",
-                    messages=[
-                        {"role": "system", "content": "You are an assistant that analyzes baseball games by searching the internet for various information based on the given parameters."},
-                        {"role": "user", "content": prompt}
-                    ],
-                    max_tokens=600
-                )
+        response = openai.ChatCompletion.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are an assistant that analyzes baseball games by searching the internet for various information based on the given parameters."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=400
+        )
 
-                analysis_text = response.choices[0]['message']['content'].strip()
-                parsed_analysis = parse_analysis(analysis_text, team1_name, team2_name)
-                if parsed_analysis and parsed_analysis["game_analysis"] != "No detailed analysis provided.":
-                    parsed_analysis['team1_name'] = team_id_map.get(team1_name, team1_name)
-                    parsed_analysis['team2_name'] = team_id_map.get(team2_name, team2_name)
-                    
-                    game_analysis = {
-                        'DATE': game_date,
-                        'TEAM1': parsed_analysis['team1_name'],
-                        'TEAM2': parsed_analysis['team2_name'],
-                        'TEAM1_WINRATE': parsed_analysis['team1_win_rate'],
-                        'TEAM2_WINRATE': parsed_analysis['team2_win_rate'],
-                        'TEAM1_SCORE': parsed_analysis['team1_score'],
-                        'TEAM2_SCORE': parsed_analysis['team2_score'],
-                        'GAME_ANALYSIS': parsed_analysis['game_analysis']
-                    }
-                    games_analysis.append(game_analysis)
-                    success = True
-                else:
-                    print(f"Error parsing response or detailed analysis missing for game {team1_name} vs {team2_name} on {game_date}")
-                    failed_games.append(game)
-            except Exception as e:
-                print(f"Error occurred for game {team1_name} vs {team2_name} on {game_date}: {e}")
-                time.sleep(1)  # 잠시 대기 후 다시 시도
+        # 응답 내용 출력
+        analysis_text = response.choices[0]['message']['content'].strip()
+        print(f"OpenAI API 응답 내용:\n{analysis_text}")
 
-    if not games_analysis:
-        print("No analysis results were generated.")
-    else:
-        print(f"Generated analysis for {len(games_analysis)} games.")
-        
-    return games_analysis, failed_games
+        parsed_analysis = parse_analysis(analysis_text, team1_name, team2_name)
+
+        if parsed_analysis and parsed_analysis["game_analysis"] != "No detailed analysis provided.":
+            parsed_analysis['team1_name'] = team_id_map.get(team1_name, team1_name)
+            parsed_analysis['team2_name'] = team_id_map.get(team2_name, team2_name)
+
+            with analysis_count_lock:
+                analysis_count += 1
+                print(f"Total number of analyses completed so far: {analysis_count}")
+
+            return {
+                'DATE': game_date,
+                'TEAM1': parsed_analysis['team1_name'],
+                'TEAM2': parsed_analysis['team2_name'],
+                'TEAM1_WINRATE': parsed_analysis['team1_win_rate'],
+                'TEAM2_WINRATE': parsed_analysis['team2_win_rate'],
+                'TEAM1_SCORE': parsed_analysis['team1_score'],
+                'TEAM2_SCORE': parsed_analysis['team2_score'],
+                'GAME_ANALYSIS': parsed_analysis['game_analysis']
+            }
+    except openai.error.OpenAIError as e:
+        # OpenAI API 호출 실패 시 오류 메시지 출력
+        print(f"OpenAI API Error for game {team1_name} vs {team2_name} on {game_date}: {e}")
+        traceback.print_exc()
+        sys.exit(1)
+    except Exception as e:
+        # 다른 모든 예외 처리
+        print(f"Unexpected error for game {team1_name} vs {team2_name} on {game_date}: {e}")
+        traceback.print_exc()
+        sys.exit(1)
+
+    return None
+
+def getAnalysisParallel(getDataFunction):
+    try:
+        games = json.loads(getDataFunction())
+        games_analysis = []
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            future_to_game = {executor.submit(analyze_game, game): game for game in games}
+
+            for future in concurrent.futures.as_completed(future_to_game):
+                try:
+                    game_analysis = future.result()
+                    if game_analysis:
+                        games_analysis.append(game_analysis)
+                except Exception as e:
+                    game = future_to_game[future]
+                    error_message = f"Error occurred for game {game['team1_name']} vs {game['team2_name']} on {game['game_date']}: {e}"
+                    print(error_message)
+                    traceback.print_exc()
+                    sys.exit(1)
+
+        return games_analysis
+    except Exception as e:
+        print(f"Error in getAnalysisParallel: {e}")
+        traceback.print_exc()
+        sys.exit(1)
 
 def remove_duplicates_and_empty_analysis(games_analysis):
-    unique_games = {}
-    for game in games_analysis:
-        key = (game['TEAM1'], game['TEAM2'], game['DATE'])
-        if key not in unique_games or game['GAME_ANALYSIS']:
-            unique_games[key] = game
-    
-    # Only include games with non-empty GAME_ANALYSIS
-    filtered_games = [game for game in unique_games.values() if game['GAME_ANALYSIS']]
+    try:
+        unique_games = {}
+        for game in games_analysis:
+            key = (game['TEAM1'], game['TEAM2'], game['DATE'])
+            if key not in unique_games or game['GAME_ANALYSIS']:
+                unique_games[key] = game
+        
+        filtered_games = [game for game in unique_games.values() if game['GAME_ANALYSIS']]
+        return filtered_games
+    except Exception as e:
+        print(f"Error in remove_duplicates_and_empty_analysis: {e}")
+        traceback.print_exc()
+        sys.exit(1)
 
-    return filtered_games
-
-# 분석 결과 출력
 if __name__ == '__main__':
-    all_analysis_results = []
-    all_failed_games = []
+    try:
+        all_analysis_results = []
 
-    print("KBO Analysis Results:")
-    kbo_analysis_results, kbo_failed_games = getAnalysis(getKBOData)
-    all_analysis_results.extend(kbo_analysis_results)
-    all_failed_games.extend(kbo_failed_games)
-    
-    print("\nMLB Analysis Results:")
-    mlb_analysis_results, mlb_failed_games = getAnalysis(getMLBData)
-    all_analysis_results.extend(mlb_analysis_results)
-    all_failed_games.extend(mlb_failed_games)
+        print("KBO Analysis Results:")
+        kbo_analysis_results = getAnalysisParallel(getKBOData)
+        all_analysis_results.extend(kbo_analysis_results)
+        
+        print("\nMLB Analysis Results:")
+        mlb_analysis_results = getAnalysisParallel(getMLBData)
+        all_analysis_results.extend(mlb_analysis_results)
 
-    while all_failed_games:
-        print(f"\nRetrying analysis for {len(all_failed_games)} failed games...")
-        retry_analysis_results, retry_failed_games = getAnalysis(lambda: json.dumps(all_failed_games, ensure_ascii=False, indent=4))
-        all_analysis_results.extend(retry_analysis_results)
-        all_failed_games = retry_failed_games
-
-    if all_analysis_results:
-        print(json.dumps(all_analysis_results, ensure_ascii=False, indent=4))
-        # 중복 제거 및 GAME_ANALYSIS 값이 빈 값이 아닌 항목만 남기기
-        all_analysis_results = remove_duplicates_and_empty_analysis(all_analysis_results)
-        # JSON 파일로 저장
-        store_analysis_to_file(all_analysis_results, filename='game_analysis.json')
-    else:
-        print("No analysis results found.")
+        if all_analysis_results:
+            all_analysis_results = remove_duplicates_and_empty_analysis(all_analysis_results)
+            store_analysis_to_file(all_analysis_results, filename='game_analysis.json')
+            
+            # Print the analysis results
+            print("\nFinal Analysis Results:")
+            for analysis in all_analysis_results:
+                print(json.dumps(analysis, ensure_ascii=False, indent=4))
+        else:
+            print("No analysis results found.")
+    except Exception as e:
+        print(f"Unexpected error in main: {e}")
+        traceback.print_exc()
+        sys.exit(1)

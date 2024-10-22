@@ -18,77 +18,98 @@ import com.game.baseball.api.runPy.runPyfileImpl;
 @Service
 public class ResultPyRunnerImpl implements PyRunner {
 
-    private static final Logger logger = LoggerFactory.getLogger(ResultPyRunnerImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(ResultPyRunnerImpl.class);
 
-    @Autowired
-    private BaseBallDaoImpl bbd;
+	@Autowired
+	private BaseBallDaoImpl bbd;
 
-    @Autowired
-    private getDay gd;
+	@Autowired
+	private getDay gd;
 
-    @Autowired
-    private readJSONImpl rji;
+	@Autowired
+	private readJSONImpl rji;
 
-    @Autowired
-    private runPyfileImpl rpi;
+	@Autowired
+	private runPyfileImpl rpi;
 
-    @Autowired
-    private FilePathsUtil filePathsUtil;
+	@Autowired
+	private FilePathsUtil filePathsUtil;
 
-    @Override
-    @Transactional
-    public void pyRunner() {
-        String tdy = gd.getTodaydate();
-        String ysd = gd.getYesterdaydate();
+	@Override
+	@Transactional
+	public void pyRunner() {
+		try {
+			executePythonScripts();
+			processResults();
+		} catch (Exception e) {
+			logger.error("Error occurred during batch processing", e);
+		}
+	}
 
-        String mlbPyPath = filePathsUtil.getMlbResultPyPath();
-        String kboPyPath = filePathsUtil.getKboResultPyPath();
+	private void executePythonScripts() {
+		String mlbPyPath = filePathsUtil.getMlbResultPyPath();
+		String kboPyPath = filePathsUtil.getKboResultPyPath();
 
-        logger.info("Running MLB result script at path: {}", mlbPyPath);
-        rpi.pyRunner(mlbPyPath);
-        logger.info("MLB result script completed");
+		try {
+			logger.info("Running MLB result script at path: {}", mlbPyPath);
+			rpi.pyRunner(mlbPyPath);
+			logger.info("MLB result script completed");
+		} catch (Exception e) {
+			logger.error("Failed to run MLB result script", e);
+		}
 
-        logger.info("Running KBO result script at path: {}", kboPyPath);
-        rpi.pyRunner(kboPyPath);
-        logger.info("KBO result script completed");
+		try {
+			logger.info("Running KBO result script at path: {}", kboPyPath);
+			rpi.pyRunner(kboPyPath);
+			logger.info("KBO result script completed");
+		} catch (Exception e) {
+			logger.error("Failed to run KBO result script", e);
+		}
 
-        try {
-            Thread.sleep(4000);
-        } catch (InterruptedException e) {
-            logger.error("Thread sleep interrupted", e);
-        }
+		try {
+			Thread.sleep(4000); // Consider replacing this with a more robust mechanism
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			logger.error("Thread sleep interrupted", e);
+		}
+	}
 
-        List<Map<String, Object>> mlbList = rji.readMLBrsltfile(tdy);
-        List<Map<String, Object>> kboList = rji.readKBOrsltfile(ysd);
+	@Transactional
+	private void processResults() {
+		String tdy = gd.getTodaydate();
+		String ysd = gd.getYesterdaydate();
 
-        logger.info("Dropping and recreating MLB result table");
-        bbd.dropMLBResulttbl();
-        bbd.createTemporaryMLBresulttbl();
+		List<Map<String, Object>> mlbList = rji.readMLBrsltfile(tdy);
+		List<Map<String, Object>> kboList = rji.readKBOrsltfile(ysd);
 
-        logger.info("Dropping and recreating KBO result table");
-        bbd.dropKBOResulttbl();
-        bbd.createTemporaryKBOresulttbl();
+		logger.info("Dropping and recreating MLB result table");
+		bbd.dropMLBResulttbl();
+		bbd.createTemporaryMLBresulttbl();
 
-        if (mlbList != null && !mlbList.isEmpty()) {
-            logger.info("Inserting MLB result data");
-            bbd.insertResultMLB(mlbList);
-        } else {
-            logger.info("No MLB result data to insert");
-        }
+		logger.info("Dropping and recreating KBO result table");
+		bbd.dropKBOResulttbl();
+		bbd.createTemporaryKBOresulttbl();
 
-        if (kboList != null && !kboList.isEmpty()) {
-            logger.info("Inserting KBO result data");
-            bbd.insertResultKBO(kboList);
-        } else {
-            logger.info("No KBO result data to insert");
-        }
+		if (mlbList != null && !mlbList.isEmpty()) {
+			logger.info("Inserting MLB result data");
+			bbd.insertResultMLB(mlbList);
+		} else {
+			logger.info("No MLB result data to insert");
+		}
 
-        logger.info("Moving MLB result data to main table");
-        bbd.moveTempMLBResultToMainTable();
-        logger.info("MLB result data moved to main table");
+		if (kboList != null && !kboList.isEmpty()) {
+			logger.info("Inserting KBO result data");
+			bbd.insertResultKBO(kboList);
+		} else {
+			logger.info("No KBO result data to insert");
+		}
 
-        logger.info("Moving KBO result data to main table");
-        bbd.moveTempKBOResultToMainTable();
-        logger.info("KBO result data moved to main table");
-    }
+		logger.info("Moving MLB result data to main table");
+		bbd.moveTempMLBResultToMainTable();
+		logger.info("MLB result data moved to main table");
+
+		logger.info("Moving KBO result data to main table");
+		bbd.moveTempKBOResultToMainTable();
+		logger.info("KBO result data moved to main table");
+	}
 }

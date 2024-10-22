@@ -22,7 +22,7 @@ import com.game.baseball.api.service.CombinedTasklet;
 @Configuration
 @EnableBatchProcessing
 @EnableScheduling
-public class BatchConfig implements SchedulingConfigurer{
+public class BatchConfig implements SchedulingConfigurer {
 
     private static final Logger logger = LoggerFactory.getLogger(BatchConfig.class);
 
@@ -37,11 +37,11 @@ public class BatchConfig implements SchedulingConfigurer{
 
     // 일정 및 경기 기록을 들고옴
     @Autowired
-    private CombinedTasklet combinedTasklet; 
+    private CombinedTasklet combinedTasklet;
 
     @Autowired
     private ExternalConfig externalConfig;
-    
+
     @Bean
     public Job job() {
         Step step = stepBuilderFactory.get("step")
@@ -55,21 +55,28 @@ public class BatchConfig implements SchedulingConfigurer{
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-    	taskRegistrar.addCronTask(this::perform, externalConfig.getScheduleCron());
+        String cronExpression = externalConfig.getScheduleCron();
+        if (cronExpression == null || cronExpression.isEmpty()) {
+            logger.warn("Cron expression is not defined. Scheduling will not be enabled.");
+            return;
+        }
+        taskRegistrar.addCronTask(this::perform, cronExpression);
     }
-    
+
     public void perform() {
         logger.info("Batch will start.");
         try {
-            logger.info("Batch Job is started at {}", System.currentTimeMillis());
+            long startTime = System.currentTimeMillis();
+            logger.info("Batch Job is started at {}", startTime);
 
             JobParameters params = new JobParametersBuilder()
-                    .addLong("time", System.currentTimeMillis())
+                    .addLong("time", startTime)
                     .toJobParameters();
 
             jobLauncher.run(job(), params);
 
-            logger.info("Batch Job is start in {}", System.currentTimeMillis());
+            long endTime = System.currentTimeMillis();
+            logger.info("Batch Job completed in {} ms", (endTime - startTime));
         } catch (Exception e) {
             logger.error("Batch job start failed", e);
         }

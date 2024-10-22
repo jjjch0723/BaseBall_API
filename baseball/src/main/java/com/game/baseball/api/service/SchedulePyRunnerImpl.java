@@ -36,25 +36,45 @@ public class SchedulePyRunnerImpl implements PyRunner {
 
     @Override
     public void pyRunner() {
-        String tdy = gd.getTodaydate();
-        String tmr = gd.getTomorrowdate();
+        try {
+            executePythonScripts();
+            processSchedules();
+        } catch (Exception e) {
+            logger.error("Error occurred during schedule batch processing", e);
+        }
+    }
 
+    private void executePythonScripts() {
         String mlbPyPath = filePathsUtil.getMlbSchedulePyPath();
         String kboPyPath = filePathsUtil.getKboSchedulePyPath();
 
-        logger.info("Running MLB schedule script at path: {}", mlbPyPath);
-        rpi.pyRunner(mlbPyPath);
-        logger.info("MLB schedule script completed");
+        try {
+            logger.info("Running MLB schedule script at path: {}", mlbPyPath);
+            rpi.pyRunner(mlbPyPath);
+            logger.info("MLB schedule script completed");
+        } catch (Exception e) {
+            logger.error("Failed to run MLB schedule script", e);
+        }
 
-        logger.info("Running KBO schedule script at path: {}", kboPyPath);
-        rpi.pyRunner(kboPyPath);
-        logger.info("KBO schedule script completed");
+        try {
+            logger.info("Running KBO schedule script at path: {}", kboPyPath);
+            rpi.pyRunner(kboPyPath);
+            logger.info("KBO schedule script completed");
+        } catch (Exception e) {
+            logger.error("Failed to run KBO schedule script", e);
+        }
 
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             logger.error("Thread sleep interrupted", e);
         }
+    }
+
+    private void processSchedules() {
+        String tdy = gd.getTodaydate();
+        String tmr = gd.getTomorrowdate();
 
         List<Map<String, Object>> mlbList = rji.readMLBfile(tmr);
         List<Map<String, Object>> kboList = rji.readKBOfile(tdy);
