@@ -1,4 +1,5 @@
 # Baseball API
+# 현재 API 사용 불가 입니다.
 
 ## 목차
 1. [Baseball API란](#11-baseball-api란)  
